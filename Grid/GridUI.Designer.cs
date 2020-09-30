@@ -102,6 +102,7 @@
             this.NUM_Lane_Dist = new System.Windows.Forms.NumericUpDown();
             this.label28 = new System.Windows.Forms.Label();
             this.groupBox_copter = new System.Windows.Forms.GroupBox();
+            this.chk_spline = new System.Windows.Forms.CheckBox();
             this.TXT_headinghold = new System.Windows.Forms.TextBox();
             this.BUT_headingholdminus = new System.Windows.Forms.Button();
             this.BUT_headingholdplus = new System.Windows.Forms.Button();
@@ -761,6 +762,7 @@
             // groupBox_copter
             // 
             resources.ApplyResources(this.groupBox_copter, "groupBox_copter");
+            this.groupBox_copter.Controls.Add(this.chk_spline);
             this.groupBox_copter.Controls.Add(this.TXT_headinghold);
             this.groupBox_copter.Controls.Add(this.BUT_headingholdminus);
             this.groupBox_copter.Controls.Add(this.BUT_headingholdplus);
@@ -770,6 +772,12 @@
             this.groupBox_copter.Controls.Add(this.NUM_copter_delay);
             this.groupBox_copter.Name = "groupBox_copter";
             this.groupBox_copter.TabStop = false;
+            // 
+            // chk_spline
+            // 
+            resources.ApplyResources(this.chk_spline, "chk_spline");
+            this.chk_spline.Name = "chk_spline";
+            this.chk_spline.UseVisualStyleBackColor = true;
             // 
             // TXT_headinghold
             // 
@@ -1514,5 +1522,6 @@
         private System.Windows.Forms.Label label43;
         private System.Windows.Forms.NumericUpDown num_corridorwidth;
         private System.Windows.Forms.CheckBox chk_spiral;
+        private System.Windows.Forms.CheckBox chk_spline;
     }
 }

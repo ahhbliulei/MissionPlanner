@@ -17,6 +17,7 @@
     <Description>Mission Planner ground control station for ardupilot</Description>
     <Copyright>Copyright © Michael Oborne 2010-2018</Copyright>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,35 +30,26 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>bin\Debug\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Optimize>false</Optimize>
-    <DebugSymbols>true</DebugSymbols>
-    <LangVersion>default</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Optimize>false</Optimize>
-    <DebugSymbols>true</DebugSymbols>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <OutputPath>bin\Debug\net461\</OutputPath>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <Prefer32Bit>false</Prefer32Bit>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <DefineConstants>DEBUG</DefineConstants>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\net461\</OutputPath>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <RootNamespace>MissionPlanner</RootNamespace>
@@ -67,19 +59,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="APMPlannerXplanes\**" />
-    <Compile Remove="Plugins\**" />
+    <Compile Remove="plugins\**" />
     <Compile Remove="resedit\**" />
     <Compile Remove="SikRadio\**" />
     <Compile Remove="Updater\**" />
     <Compile Remove="wix\**" />
     <EmbeddedResource Remove="APMPlannerXplanes\**" />
-    <EmbeddedResource Remove="Plugins\**" />
+    <EmbeddedResource Remove="plugins\**" />
     <EmbeddedResource Remove="resedit\**" />
     <EmbeddedResource Remove="SikRadio\**" />
     <EmbeddedResource Remove="Updater\**" />
     <EmbeddedResource Remove="wix\**" />
     <None Remove="APMPlannerXplanes\**" />
-    <None Remove="Plugins\**" />
+    <None Remove="plugins\**" />
     <None Remove="resedit\**" />
     <None Remove="SikRadio\**" />
     <None Remove="Updater\**" />
@@ -102,6 +94,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Management" />
     <Reference Include="System.Speech" />
     <Reference Include="System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
@@ -114,6 +107,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="ExtLibs\7zip\7zip.csproj">
+      <Project>{1117efd6-3a46-47f7-9beb-02792d213b8d}</Project>
+      <Name>7zip</Name>
+    </ProjectReference>
     <ProjectReference Include="ExtLibs\alglibnet\alglibnet.csproj">
       <Project>{b994d8d2-c052-4616-9d20-386640c7387f}</Project>
       <Name>alglibnet</Name>
@@ -143,6 +140,10 @@
       <Project>{2a8e8af5-74e7-49db-a42e-9360fa7a6cc4}</Project>
       <Name>BaseClasses</Name>
     </ProjectReference>
+    <ProjectReference Include="ExtLibs\BouncyCastle\BouncyCastle.csproj">
+      <Project>{ba876930-f966-4dd3-8f60-966d6fe93b76}</Project>
+      <Name>BouncyCastle</Name>
+    </ProjectReference>
     <ProjectReference Include="ExtLibs\BSE.Windows.Forms\BSE.Windows.Forms.csproj">
       <Project>{9ca367b8-0b98-49d1-84fb-735e612e3ba9}</Project>
       <Name>BSE.Windows.Forms</Name>
@@ -159,6 +160,10 @@
       <Project>{59129078-7B12-4198-B93E-0AA08D0BB7ED}</Project>
       <Name>Core</Name>
       <Private>true</Private>
+    </ProjectReference>
+    <ProjectReference Include="ExtLibs\DirectShowLib\DirectShowLib.csproj">
+      <Project>{637a5d55-908e-4aee-b061-3981b66f1b9f}</Project>
+      <Name>DirectShowLib</Name>
     </ProjectReference>
     <ProjectReference Include="ExtLibs\GDAL\GDAL.NET.csproj">
       <Project>{766FCF85-4809-44DB-B316-6C4902C65245}</Project>
@@ -220,6 +225,11 @@
       <Project>{B46F6C6C-9184-41AF-8F8B-E0084752CA7C}</Project>
       <Name>MetaDataExtractor</Name>
     </ProjectReference>
+    <ProjectReference Include="ExtLibs\MissionPlanner.Drawing\MissionPlanner.Drawing.csproj">
+      <Project>{6974D22C-EDE6-4BB2-AAD2-FF23ED6EC165}</Project>
+      <Name>MissionPlanner.Drawing</Name>
+      <Aliases>Drawing</Aliases>
+    </ProjectReference>
     <ProjectReference Include="ExtLibs\netDxf\netDxf.csproj">
       <Project>{785380e0-ceb9-4c34-82e5-60d0e33e848e}</Project>
       <Name>netDxf</Name>
@@ -276,6 +286,10 @@
       <Project>{78AC6375-28AF-4175-9F20-B5099C92EA2B}</Project>
       <Name>WebCamService</Name>
     </ProjectReference>
+    <ProjectReference Include="ExtLibs\Xamarin.Forms.Platform.WinForms\Xamarin.Forms.Platform.WinForms.csproj">
+      <Project>{563d7c2e-14e2-47ec-95e4-4ea0bba75c18}</Project>
+      <Name>Xamarin.Forms.Platform.WinForms</Name>
+    </ProjectReference>
     <ProjectReference Include="ExtLibs\ZedGraph\ZedGraph.csproj">
       <Project>{2541686B-1673-43BF-AF89-3163945DB009}</Project>
       <Name>ZedGraph</Name>
@@ -291,9 +305,8 @@
       <Version>1.2.0</Version>
     </PackageReference>
     <PackageReference Include="CSMatIO" version="1.0.20" targetFramework="netstandard2.0" requireReinstallation="true" />
-    <PackageReference Include="DirectShowLib" Version="1.0.0" />
-    <PackageReference Include="DotNetZip.NetStandard">
-      <Version>1.12.0</Version>
+    <PackageReference Include="DotNetZip">
+      <Version>1.13.8</Version>
     </PackageReference>
     <PackageReference Include="DotSpatial.Data" version="1.9" targetFramework="net462" />
     <PackageReference Include="DotSpatial.Data.Forms" version="1.9" targetFramework="net462" />
@@ -309,20 +322,31 @@
     <PackageReference Include="DotSpatial.Topology" version="1.9" targetFramework="net462" />
     <PackageReference Include="Flurl" version="2.8.0" targetFramework="net462" />
     <PackageReference Include="Flurl.Http" version="2.3.2" targetFramework="net462" />
-    <PackageReference Include="GDAL" Version="2.4.2" />
+    <PackageReference Include="GDAL" Version="2.3.2" />
+    <PackageReference Include="GDAL.Native">
+      <Version>2.3.2</Version>
+    </PackageReference>
     <PackageReference Include="GeoidHeightsDotNet">
       <Version>1.0.1</Version>
     </PackageReference>
     <PackageReference Include="GeoJSON.Net" version="1.1.64" targetFramework="net462" />
     <PackageReference Include="IronPython" version="2.7.8.1" targetFramework="net462" />
     <PackageReference Include="IronPython.StdLib" version="2.7.8.1" targetFramework="net462" />
+    <PackageReference Include="JetBrains.Profiler.SelfApi">
+      <Version>2.0.2</Version>
+    </PackageReference>
     <PackageReference Include="log4net" version="2.0.8" targetFramework="net462" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
-    <PackageReference Include="MP.GDAL.Native" Version="2.2.3" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
+      <Version>3.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Diagnostics.Runtime">
+      <Version>1.1.127808</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
     <PackageReference Include="NETStandard.Library">
       <Version>2.0.3</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" version="12.0.2" targetFramework="net462" />
+    <PackageReference Include="Newtonsoft.Json" version="12.0.3" targetFramework="net462" />
     <PackageReference Include="OpenTK">
       <Version>3.1.0</Version>
     </PackageReference>
@@ -331,30 +355,46 @@
     </PackageReference>
     <PackageReference Include="SharpDX" version="4.1.0" targetFramework="net462" />
     <PackageReference Include="SharpDX.DirectInput" version="4.1.0" targetFramework="net462" />
-    <PackageReference Include="SkiaSharp" Version="1.68.0" />
+    <PackageReference Include="SkiaSharp" Version="1.68.1.1" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux">
-      <Version>1.68.0</Version>
+      <Version>1.68.1.1</Version>
     </PackageReference>
-    <PackageReference Include="SkiaSharp.Views" Version="1.68.0" />
+    <PackageReference Include="SkiaSharp.Views" Version="1.68.1.1" />
     <PackageReference Include="SSH.NET" version="2016.1.0" targetFramework="net40" />
     <PackageReference Include="System.CodeDom">
-      <Version>4.5.0</Version>
+      <Version>4.7.0</Version>
     </PackageReference>
-    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
-    <PackageReference Include="System.IO.Ports" Version="4.5.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="System.IO.Ports" Version="4.7.0" />
     <PackageReference Include="System.Reactive" Version="4.0.0" />
     <PackageReference Include="System.Reactive.Core" Version="4.0.0" />
     <PackageReference Include="System.Reactive.Linq" Version="4.0.0" />
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.5.0</Version>
+    </PackageReference>
     <PackageReference Include="Unofficial.ObjectListView" version="2.6.0" targetFramework="net40" />
-    <PackageReference Include="Xamarin.Forms.Platform.WinForms">
-      <Version>3.4.0-alpha</Version>
+    <PackageReference Include="Xamarin.Forms">
+      <Version>4.5.0.530</Version>
     </PackageReference>
     <PackageReference Include="zlib.net" version="1.0.4.0" targetFramework="net40" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Antenna\TrackerGeneric.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Controls\ConnectionOptions.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlSensorsStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlSensorsStatus.Designer.cs">
+      <DependentUpon>ControlSensorsStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DevopsUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DevopsUI.Designer.cs">
+      <DependentUpon>DevopsUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\DigitalSkyUI.cs">
       <SubType>UserControl</SubType>
@@ -362,7 +402,38 @@
     <Compile Include="Controls\DigitalSkyUI.Designer.cs">
       <DependentUpon>DigitalSkyUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SerialOutputCoT.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\SerialOutputCoT.Designer.cs">
+      <DependentUpon>SerialOutputCoT.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GMAPCache.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GMAPCache.Designer.cs">
+      <DependentUpon>GMAPCache.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Icon\File.cs" />
+    <Compile Include="Controls\Icon\Zoom.cs" />
+    <Compile Include="Controls\Status.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Status.Designer.cs">
+      <DependentUpon>Status.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThemeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\ThemeEditor.Designer.cs">
+      <DependentUpon>ThemeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UAVCANFileUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UAVCANFileUI.Designer.cs">
+      <DependentUpon>UAVCANFileUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\RelayOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -403,11 +474,23 @@
     <Compile Include="GCSViews\ConfigurationView\ConfigFirmwareManifest.Designer.cs">
       <DependentUpon>ConfigFirmwareManifest.cs</DependentUpon>
     </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigHWCompass2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigHWCompass2.Designer.cs">
+      <DependentUpon>ConfigHWCompass2.cs</DependentUpon>
+    </Compile>
     <Compile Include="GCSViews\ConfigurationView\ConfigHWIDs.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GCSViews\ConfigurationView\ConfigHWIDs.Designer.cs">
       <DependentUpon>ConfigHWIDs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigAdvanced.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigAdvanced.Designer.cs">
+      <DependentUpon>ConfigAdvanced.cs</DependentUpon>
     </Compile>
     <Compile Include="GCSViews\ConfigurationView\ConfigOSD.cs">
       <SubType>UserControl</SubType>
@@ -421,8 +504,26 @@
     <Compile Include="Controls\UAVCANParams.Designer.cs">
       <DependentUpon>UAVCANParams.cs</DependentUpon>
     </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigParamLoading.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigParamLoading.Designer.cs">
+      <DependentUpon>ConfigParamLoading.cs</DependentUpon>
+    </Compile>
     <Compile Include="GCSViews\ConfigurationView\ConfigSerialInjectGPS.Designer.cs">
       <DependentUpon>ConfigSerialInjectGPS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigREPL.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigREPL.Designer.cs">
+      <DependentUpon>ConfigREPL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigTradHeli4.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigTradHeli4.Designer.cs">
+      <DependentUpon>ConfigTradHeli4.cs</DependentUpon>
     </Compile>
     <Compile Include="GCSViews\ConfigurationView\ConfigUAVCAN.cs">
       <SubType>UserControl</SubType>
@@ -436,17 +537,71 @@
     <Compile Include="GCSViews\ConfigurationView\ConfigUserDefined.Designer.cs">
       <DependentUpon>ConfigUserDefined.cs</DependentUpon>
     </Compile>
+    <Compile Include="GCSViews\ConfigurationView\DeviceInfo.cs" />
+    <Compile Include="GCSViews\ConfigurationView\UAVCANModel.cs" />
+    <Compile Include="GCSViews\ConfigurationView\uitype.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Joystick\JoystickAxis.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Log\MavlinkLogBase.cs" />
+    <Compile Include="MainV2.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainV2.Designer.cs">
+      <SubType>Form</SubType>
       <DependentUpon>MainV2.cs</DependentUpon>
     </Compile>
+    <Compile Include="NativeMethods.cs" />
+    <None Include="arm64\libSkiaSharp.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="arm\libSkiaSharp.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MissionPlanner.GCSViews.ConfigurationView.ConfigHWCompass2+CompassDeviceInfo.datasource" />
+    <None Include="plugins\example2-menu.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="plugins\example3-fencedist.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="plugins\example4-herelink.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="plugins\example5-latencytracker.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="plugins\example6-mapicondesc.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="plugins\example7-canrtcm.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="plugins\InitialParamsCalculator.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="plugins\example8-modechange.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="plugins\generator.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>UserControl</SubType>
+    </None>
+    <Compile Include="plugins\example9-hudonoff.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Radio\Models.cs" />
     <Compile Include="ResEdit.Designer.cs">
       <DependentUpon>ResEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="SikRadio\ISikRadioForm.cs" />
+    <Compile Include="SikRadio\RFD900.cs" />
+    <Compile Include="SikRadio\RFDLib\Array.cs" />
+    <Compile Include="SikRadio\RFDLib\Text.cs" />
     <Compile Include="Splash.Designer.cs">
+      <SubType>Form</SubType>
       <DependentUpon>Splash.cs</DependentUpon>
     </Compile>
     <Compile Include="Swarm\PaintEventArgsI.cs" />
@@ -456,19 +611,20 @@
     <Compile Include="test\FirmwareSelection.xaml.cs">
       <DependentUpon>FirmwareSelection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserPanel\UserPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanel\UserPanel.Designer.cs">
+      <DependentUpon>UserPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\AltitudeAngel\MissionPlannerStateAdapter.cs" />
-    <Compile Include="Utilities\GimbalPoint.cs" />
     <Compile Include="Utilities\NativeLibrary.cs" />
     <Compile Include="Utilities\Speech.cs" />
     <Compile Include="Utilities\SSHTerminal.cs" />
-    <Compile Include="Utilities\XTermRBGColors.cs" />
     <Compile Include="Grid\camerainfo.cs" />
     <Compile Include="Grid\GridData.cs" />
     <Compile Include="L10N.cs" />
     <Compile Include="MagCalib.cs" />
-    <Compile Include="MainV2.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Controls\MovingBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -525,7 +681,7 @@
     <Compile Include="temp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Antenna\Tracker.cs">
+    <Compile Include="Antenna\TrackerUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\AuthKeys.cs">
@@ -558,8 +714,29 @@
     <Compile Include="Log\LogStrings.Designer.cs">
       <DependentUpon>LogStrings.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Controls\ControlSensorsStatus.resx">
+      <DependentUpon>ControlSensorsStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DevopsUI.resx">
+      <DependentUpon>DevopsUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\DigitalSkyUI.resx">
       <DependentUpon>DigitalSkyUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SerialOutputCoT.resx">
+      <DependentUpon>SerialOutputCoT.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GMAPCache.resx">
+      <DependentUpon>GMAPCache.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Status.resx">
+      <DependentUpon>Status.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ThemeEditor.resx">
+      <DependentUpon>ThemeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UAVCANFileUI.resx">
+      <DependentUpon>UAVCANFileUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\RelayOptions.ar.resx">
       <DependentUpon>RelayOptions.cs</DependentUpon>
@@ -606,11 +783,21 @@
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigADSB.resx">
       <DependentUpon>ConfigADSB.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigFFT.resx">
+      <DependentUpon>ConfigFFT.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigFirmwareManifest.resx">
       <DependentUpon>ConfigFirmwareManifest.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigHWCompass2.resx">
+      <DependentUpon>ConfigHWCompass2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigHWIDs.resx">
       <DependentUpon>ConfigHWIDs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigAdvanced.resx">
+      <DependentUpon>ConfigAdvanced.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigOSD.resx">
       <DependentUpon>ConfigOSD.cs</DependentUpon>
@@ -660,6 +847,15 @@
     <EmbeddedResource Include="Controls\UAVCANParams.zh-TW.resx">
       <DependentUpon>UAVCANParams.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigParamLoading.resx">
+      <DependentUpon>ConfigParamLoading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigREPL.resx">
+      <DependentUpon>ConfigREPL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTradHeli4.resx">
+      <DependentUpon>ConfigTradHeli4.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigUAVCAN.resx">
       <DependentUpon>ConfigUAVCAN.cs</DependentUpon>
     </EmbeddedResource>
@@ -698,9 +894,6 @@
     <Compile Include="GCSViews\SITL.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ThemeColors.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Controls\ToolStripConnectionControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -737,7 +930,7 @@
     <Compile Include="GCSViews\SoftwareConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GCSViews\Terminal.cs">
+    <Compile Include="GCSViews\ConfigurationView\ConfigTerminal.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GCSViews\ConfigurationView\ConfigAccelerometerCalibration.cs">
@@ -974,13 +1167,8 @@
     <Compile Include="Utilities\httpserver.cs" />
     <Compile Include="Utilities\LangUtility.cs" />
     <Compile Include="Utilities\LogAnalyzer.cs" />
-    <Compile Include="Utilities\OpticalFlow.cs" />
-    <Compile Include="Utilities\ParamFile.cs" />
     <Compile Include="Utilities\POI.cs" />
-    <Compile Include="Utilities\StreamCombiner.cs" />
-    <Compile Include="Utilities\StringRedirectWriter.cs" />
     <Compile Include="Utilities\ThemeManager.cs" />
-    <Compile Include="Utilities\Tracking.cs" />
     <Compile Include="Utilities\GStreamerUI.cs" />
     <Compile Include="Utilities\Update.cs" />
     <Compile Include="Utilities\Win32DeviceMgnt.cs" />
@@ -991,6 +1179,7 @@
     <Compile Include="Utilities\AltitudeAngel\MapAdapter.cs" />
     <Compile Include="Utilities\AltitudeAngel\MissionPlannerAdaptor.cs" />
     <Compile Include="Utilities\AltitudeAngel\OverlayAdapter.cs" />
+    <Compile Include="Utilities\XMLColor.cs" />
     <Compile Include="Warnings\WarningControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1032,8 +1221,8 @@
     <Compile Include="Controls\SerialOutputPass.Designer.cs">
       <DependentUpon>SerialOutputPass.cs</DependentUpon>
     </Compile>
-    <Compile Include="Antenna\Tracker.Designer.cs">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <Compile Include="Antenna\TrackerUI.Designer.cs">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\AuthKeys.Designer.cs">
       <DependentUpon>AuthKeys.cs</DependentUpon>
@@ -1068,9 +1257,6 @@
     <Compile Include="GCSViews\SITL.Designer.cs">
       <DependentUpon>SITL.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ThemeColors.Designer.cs">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Vibration.Designer.cs">
       <DependentUpon>Vibration.cs</DependentUpon>
     </Compile>
@@ -1098,8 +1284,8 @@
     <Compile Include="GCSViews\SoftwareConfig.Designer.cs">
       <DependentUpon>SoftwareConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="GCSViews\Terminal.Designer.cs">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <Compile Include="GCSViews\ConfigurationView\ConfigTerminal.Designer.cs">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </Compile>
     <Compile Include="GCSViews\ConfigurationView\ConfigAccelerometerCalibration.Designer.cs">
       <DependentUpon>ConfigAccelerometerCalibration.cs</DependentUpon>
@@ -1390,6 +1576,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainV2.resx">
       <DependentUpon>MainV2.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="MainV2.ar.resx">
       <DependentUpon>MainV2.cs</DependentUpon>
@@ -1487,8 +1674,14 @@
     <EmbeddedResource Include="Controls\paramcompare.resx">
       <DependentUpon>paramcompare.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="plugins\generator.resx">
+      <DependentUpon>generator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Plugin\PluginUI.resx">
+      <DependentUpon>PluginUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1712,47 +1905,47 @@
     <EmbeddedResource Include="temp.resx">
       <DependentUpon>temp.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.ar.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.ar.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.az-Latn-AZ.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.az-Latn-AZ.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.de-DE.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.de-DE.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.fr.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.fr.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.id-ID.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.id-ID.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.it-IT.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.it-IT.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.ko-KR.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.ko-KR.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.pt.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.pt.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.ru-KZ.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.ru-KZ.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.tr.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.tr.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.zh-Hans.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.zh-Hans.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.zh-Hant.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.zh-Hant.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Antenna\Tracker.zh-TW.resx">
-      <DependentUpon>Tracker.cs</DependentUpon>
+    <EmbeddedResource Include="Antenna\TrackerUI.zh-TW.resx">
+      <DependentUpon>TrackerUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\AuthKeys.resx">
       <DependentUpon>AuthKeys.cs</DependentUpon>
@@ -1925,36 +2118,6 @@
     <EmbeddedResource Include="GCSViews\SITL.resx">
       <DependentUpon>SITL.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.ar.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.az-Latn-AZ.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.id-ID.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.ja-JP.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.ko-KR.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.pt.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.ru-KZ.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.tr.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ThemeColors.zh-Hans.resx">
-      <DependentUpon>ThemeColors.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Vibration.resx">
       <DependentUpon>Vibration.cs</DependentUpon>
     </EmbeddedResource>
@@ -1969,6 +2132,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.resx">
       <DependentUpon>FlightData.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.ar.resx">
       <DependentUpon>FlightData.cs</DependentUpon>
@@ -2131,6 +2295,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\InitialSetup.resx">
       <DependentUpon>InitialSetup.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\InitialSetup.ar.resx">
       <DependentUpon>InitialSetup.cs</DependentUpon>
@@ -2170,60 +2335,61 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\SoftwareConfig.resx">
       <DependentUpon>SoftwareConfig.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.ar.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.ar.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.az-Latn-AZ.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.az-Latn-AZ.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.de-DE.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.de-DE.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.es-ES.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.es-ES.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.fr.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.fr.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.id-ID.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.id-ID.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.it-IT.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.it-IT.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.ja-JP.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.ja-JP.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.ko-KR.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.ko-KR.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.pl.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.pl.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.pt.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.pt.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.ru-KZ.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.ru-KZ.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.ru-RU.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.ru-RU.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.tr.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.tr.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.zh-Hans.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.zh-Hans.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.zh-Hant.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.zh-Hant.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GCSViews\Terminal.zh-TW.resx">
-      <DependentUpon>Terminal.cs</DependentUpon>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigTerminal.zh-TW.resx">
+      <DependentUpon>ConfigTerminal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigAccelerometerCalibration.resx">
       <DependentUpon>ConfigAccelerometerCalibration.cs</DependentUpon>
@@ -2275,6 +2441,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigAC_Fence.resx">
       <DependentUpon>ConfigAC_Fence.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigAC_Fence.ar.resx">
       <DependentUpon>ConfigAC_Fence.cs</DependentUpon>
@@ -2344,6 +2511,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigArducopter.resx">
       <DependentUpon>ConfigArducopter.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigArducopter.ar.resx">
       <DependentUpon>ConfigArducopter.cs</DependentUpon>
@@ -2698,6 +2866,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigFailSafe.resx">
       <DependentUpon>ConfigFailSafe.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigFailSafe.ar.resx">
       <DependentUpon>ConfigFailSafe.cs</DependentUpon>
@@ -2887,6 +3056,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigFrameClassType.resx">
       <DependentUpon>ConfigFrameClassType.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigFrameClassType.ar.resx">
       <DependentUpon>ConfigFrameClassType.cs</DependentUpon>
@@ -4105,6 +4275,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Log\LogDownloadscp.resx">
       <DependentUpon>LogDownloadscp.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Log\LogDownloadscp.az-Latn-AZ.resx">
       <DependentUpon>LogDownloadscp.cs</DependentUpon>
@@ -4168,9 +4339,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Log\MavlinkLog.zh-Hans.resx">
       <DependentUpon>MavlinkLog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Plugin\PluginUI.resx">
-      <DependentUpon>PluginUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Radio\Sikradio.resx">
       <DependentUpon>Sikradio.cs</DependentUpon>
@@ -4241,6 +4409,9 @@
     <EmbeddedResource Include="Controls\fftui.resx">
       <DependentUpon>fftui.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserPanel\UserPanel.resx">
+      <DependentUpon>UserPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Utilities\AltitudeAngel\AASettings.resx">
       <DependentUpon>AASettings.cs</DependentUpon>
     </EmbeddedResource>
@@ -4258,6 +4429,31 @@
     <Content Include="aircraft.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="quaternion.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="rotmat.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="plugins\example-watchbutton.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include=".editorconfig" />
+    <None Include="BurntKermit.mpsystheme">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Drivers\chibioscomp.cat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Drivers\cubecomp.cat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="HighContrast.mpsystheme">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MissionPlanner.GCSViews.ConfigurationView.DeviceInfo.datasource" />
+    <None Include="Resources\Gaugebg.png" />
+    <None Include="appxmanifest.xml" />
     <Content Include="ArduCopterConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -4271,6 +4467,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="dataflashlog.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Drivers\ChibiOSComp.inf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Drivers\CubeComp.inf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Drivers\devcon.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Drivers\DriverCleanup.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Drivers\Holybro.inf">
@@ -4324,7 +4532,6 @@
     <Content Include="ParameterMetaDataBackup.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Properties\launchSettings.json" />
     <None Include="adb.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -4477,10 +4684,10 @@
     <Content Include="Drivers\vrugimbal.inf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Drivers\nxp.cat">
+    <None Include="Drivers\DriverCleanup.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="libSkiaSharp.so">
+    <None Include="Drivers\nxp.cat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="m3u\both.m3u">
@@ -4498,7 +4705,6 @@
     <None Include="m3u\networklink.kml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="MissionPlanner.GCSViews.ConfigurationView.UAVCANModel.datasource" />
     <None Include="NoFly\Areas-Lisboa.kmz">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -4510,9 +4716,6 @@
     </None>
     <None Include="NoFly\SouthAfricaNoRPASOutlined.kmz">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="ph2_serial.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Properties\app.manifest" />
     <None Include="Scripts\datetime.py">
@@ -4563,7 +4766,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Update="**/*.Designer.cs">
-      <DependentUpon Condition="Exists($([System.String]::Copy('%(Filename)').ToLower().Replace('.designer','.cs')))">ConfigSerialInjectGPS.cs</DependentUpon>
+      <DependentUpon Condition="Exists($([System.String]::Copy('%(Filename)').ToLower().Replace('.designer','.cs')))">$([System.Text.RegularExpressions.Regex]::Replace('%(FileName)', '\.[a-zA-Z\-]+', '')).cs</DependentUpon>
     </Compile>
     <EmbeddedResource Update="**/*.99resx">
       <DependentUpon Condition="Exists($([System.Text.RegularExpressions.Regex]::Replace('%(FileName)', '\.[a-zA-Z\-]+', '.cs')))">$([System.Text.RegularExpressions.Regex]::Replace('%(FileName)', '\.[a-zA-Z\-]+', '')).cs</DependentUpon>
@@ -4609,12 +4812,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
 </Project>

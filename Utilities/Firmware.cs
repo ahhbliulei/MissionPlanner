@@ -1,6 +1,7 @@
 ﻿using log4net;
 using ManagedNativeWifi.Simple;
 using MissionPlanner.Arduino;
+using MissionPlanner.ArduPilot;
 using MissionPlanner.Comms;
 using px4uploader;
 using SharpAdbClient;
@@ -15,12 +16,9 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-using MissionPlanner.ArduPilot;
-using MissionPlanner.test;
 
 namespace MissionPlanner.Utilities
 {
@@ -30,12 +28,12 @@ namespace MissionPlanner.Utilities
 
         public event ProgressEventHandler Progress;
 
-        string firmwareurl = "https://github.com/ArduPilot/binary/raw/master/Firmware/firmware2.xml;http://firmware.ardupilot.org/Tools/MissionPlanner/Firmware/firmware2.xml";
+        string firmwareurl = "https://github.com/ArduPilot/binary/raw/master/Firmware/firmware2.xml;https://firmware.ardupilot.org/Tools/MissionPlanner/Firmware/firmware2.xml";
 
         static readonly string gholdurl = ("https://github.com/diydrones/binary/raw/!Hash!/Firmware/firmware2.xml");
         static readonly string gholdfirmwareurl = ("https://github.com/diydrones/binary/raw/!Hash!/Firmware/!Firmware!");
 
-        static string[] gholdurls = new string[] {};
+        static string[] gholdurls = new string[] { };
 
         public static List<KeyValuePair<string, string>> niceNames = new List<KeyValuePair<string, string>>();
 
@@ -75,7 +73,7 @@ namespace MissionPlanner.Utilities
             public string urlbebop2 = "";
             public string urldisco = "";
             public string urlnxpfmuk66 = "";
-            
+
             // chibios - libraries\AP_HAL_ChibiOS\hwdef
             public string urlfmuv2 = "";
             public string urlfmuv3 = "";
@@ -93,8 +91,6 @@ namespace MissionPlanner.Utilities
                 return this.ToJSON();
             }
         }
-
-
 
         public static string getUrl(string hash, string filename)
         {
@@ -175,7 +171,7 @@ namespace MissionPlanner.Utilities
         /// Load xml from internet based on firmwareurl, and return softwarelist
         /// </summary>
         /// <returns></returns>
-        public List<software> getFWList(string firmwareurl = "", APFirmware.RELEASE_TYPES rEL_Type = APFirmware.RELEASE_TYPES.OFFICIAL)
+        public List<software> getFWList(string firmwareurl = "")
         {
             if (firmwareurl == "")
                 firmwareurl = this.firmwareurl;
@@ -187,15 +183,9 @@ namespace MissionPlanner.Utilities
 
             software temp = new software();
 
-            // this is for mono to a ssl server
-            //ServicePointManager.CertificatePolicy = new NoCheckCertificatePolicy(); 
-            ServicePointManager.ServerCertificateValidationCallback =
-                new System.Net.Security.RemoteCertificateValidationCallback(
-                    (sender1, certificate, chain, policyErrors) => { return true; });
-
             updateProgress(-1, Strings.GettingFWList);
 
-            var urls = firmwareurl.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+            var urls = firmwareurl.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             var valid = false;
             Exception invalidex = null;
 
@@ -205,10 +195,10 @@ namespace MissionPlanner.Utilities
                 {
                     var dnsinfo = Dns.GetHostAddresses(new Uri(url).DnsSafeHost);
 
-                    if(dnsinfo.Length ==0)
+                    if (dnsinfo.Length == 0)
                         throw new Exception("Failed to resolve dns");
 
-                    XmlSerializer xms = new XmlSerializer(typeof(optionsObject), new Type[] {typeof(software)});
+                    XmlSerializer xms = new XmlSerializer(typeof(optionsObject), new Type[] { typeof(software) });
 
                     log.Info("url: " + url);
                     WebRequest request = WebRequest.Create(url);
@@ -219,7 +209,7 @@ namespace MissionPlanner.Utilities
                     using (WebResponse response = request.GetResponse())
                     using (XmlReader xmlreader = XmlReader.Create(response.GetResponseStream()))
                     {
-                        options = (optionsObject) xms.Deserialize(xmlreader);
+                        options = (optionsObject)xms.Deserialize(xmlreader);
                     }
 
                     valid = true;
@@ -258,7 +248,7 @@ namespace MissionPlanner.Utilities
         public static void SaveSoftwares(optionsObject list)
         {
             System.Xml.Serialization.XmlSerializer writer =
-                new System.Xml.Serialization.XmlSerializer(typeof (optionsObject), new Type[] {typeof (software)});
+                new System.Xml.Serialization.XmlSerializer(typeof(optionsObject), new Type[] { typeof(software) });
 
             using (
                 StreamWriter sw =
@@ -273,13 +263,13 @@ namespace MissionPlanner.Utilities
             try
             {
                 System.Xml.Serialization.XmlSerializer reader =
-                    new System.Xml.Serialization.XmlSerializer(typeof (optionsObject), new Type[] {typeof (software)});
+                    new System.Xml.Serialization.XmlSerializer(typeof(optionsObject), new Type[] { typeof(software) });
 
                 using (
                     StreamReader sr =
                         new StreamReader(Settings.GetUserDataDirectory() + "fwversions.xml"))
                 {
-                    return ((optionsObject) reader.Deserialize(sr)).softwares;
+                    return ((optionsObject)reader.Deserialize(sr)).softwares;
                 }
             }
             catch (Exception ex)
@@ -309,11 +299,9 @@ namespace MissionPlanner.Utilities
         /// <returns></returns>
         void getAPMVersion(object tempin)
         {
-            System.Threading.Thread.CurrentThread.CurrentUICulture = L10N.ConfigLang;
-
             try
             {
-                software temp = (software) tempin;
+                software temp = (software)tempin;
 
                 string baseurl = temp.urlfmuv3;
                 string baseurl2 = temp.urlpx4v2;
@@ -405,57 +393,17 @@ namespace MissionPlanner.Utilities
         /// <param name="temp"></param>
         /// <param name="historyhash"></param>
         /// <param name="relType"></param>
-        public bool update(string comport, software temp, string historyhash)
+        public bool update(string comport, software temp, string historyhash, List<DeviceInfo> ports)
         {
             BoardDetect.boards board = BoardDetect.boards.none;
             string baseurl = "";
 
             try
             {
-                if (false && string.IsNullOrEmpty(historyhash))
-                {
-                    try
-                    {
-                        var ports = Win32DeviceMgmt.GetAllCOMPorts();
-
-                        foreach (var item in ports)
-                        {
-                            log.InfoFormat("{0}: {1} - {2}", item.name, item.description, item.board);
-
-                            // get the options for this device
-                            var fwitems = APFirmware.GetOptions(item, MapRelType(temp), MapMAVType(temp));
-                            if (fwitems?.Count == 1)
-                            {
-                                board = BoardDetect.boards.pass;
-                                baseurl = fwitems[0].Url.ToString();
-                            }
-                            else if (fwitems?.Count > 0)
-                            {
-                                FirmwareSelection fws = new FirmwareSelection(fwitems, item);
-                                fws.ShowXamarinControl(400, 800);
-                                board = BoardDetect.boards.pass;
-                                baseurl = fws.FinalResult;
-                                break;
-                            }
-                        }
-
-                        if (baseurl == null || baseurl == string.Empty && board == BoardDetect.boards.pass)
-                        {
-                            //CustomMessageBox.Show(Strings.No_firmware_available_for_this_board);
-                            //return false;
-                        }
-                    }
-                    catch
-                    {
-
-                    }
-                }
-
-
                 updateProgress(-1, Strings.DetectingBoardVersion);
 
-                if(board != BoardDetect.boards.pass)
-                    board = BoardDetect.DetectBoard(comport);
+                if (board != BoardDetect.boards.pass)
+                    board = BoardDetect.DetectBoard(comport, ports);
 
                 if (board == BoardDetect.boards.none)
                 {
@@ -468,7 +416,7 @@ namespace MissionPlanner.Utilities
                 updateProgress(-1, Strings.DetectedA + board);
 
                 // modify board to update to new bootloader
-                if (board == BoardDetect.boards.px4v3 && historyhash == "")
+                if ((board == BoardDetect.boards.px4v2 || board == BoardDetect.boards.px4v3) && historyhash == "")
                 {
                     //
                     if ((int)DialogResult.Yes ==
@@ -478,7 +426,7 @@ namespace MissionPlanner.Utilities
                         board = BoardDetect.boards.chbootloader;
                     }
                 }
-             
+
                 if (board == BoardDetect.boards.b2560)
                 {
                     baseurl = temp.url2560.ToString();
@@ -527,7 +475,7 @@ namespace MissionPlanner.Utilities
                 else if (board == BoardDetect.boards.px4v4pro)
                 {
                     baseurl = temp.urlpx4v4pro.ToString();
-                }				
+                }
                 else if (board == BoardDetect.boards.vrbrainv40)
                 {
                     baseurl = temp.urlvrbrainv40.ToString();
@@ -596,7 +544,7 @@ namespace MissionPlanner.Utilities
                 }
                 else if (board == BoardDetect.boards.pass)
                 {
-                    
+
                 }
                 else
                 {
@@ -701,36 +649,6 @@ namespace MissionPlanner.Utilities
             return ans;
         }
 
-        private APFirmware.MAV_TYPE? MapMAVType(software temp)
-        {
-            if (temp.urlfmuv3.ToLower().Contains("-heli".ToLower()))
-                return APFirmware.MAV_TYPE.HELICOPTER;
-            if (temp.urlfmuv3.ToLower().Contains("AntennaTracker".ToLower()))
-                return APFirmware.MAV_TYPE.ANTENNA_TRACKER;
-            if (temp.urlfmuv3.ToLower().Contains("Plane".ToLower()))
-                return APFirmware.MAV_TYPE.FIXED_WING;
-            if (temp.urlfmuv3.ToLower().Contains("Rover".ToLower()))
-                return APFirmware.MAV_TYPE.GROUND_ROVER;
-            if (temp.urlfmuv3.ToLower().Contains("Sub".ToLower()))
-                return APFirmware.MAV_TYPE.SUBMARINE;
-            if (temp.urlfmuv3.ToLower().Contains("Copter".ToLower()))
-                return APFirmware.MAV_TYPE.Copter;
-
-            return null;
-        }
-
-        private APFirmware.RELEASE_TYPES? MapRelType(software temp)
-        {
-            if (temp.urlfmuv3.ToLower().Contains("stable"))
-                return APFirmware.RELEASE_TYPES.OFFICIAL;
-            if (temp.urlfmuv3.ToLower().Contains("latest"))
-                return APFirmware.RELEASE_TYPES.DEV;
-            if (temp.urlfmuv3.ToLower().Contains("beta"))
-                return APFirmware.RELEASE_TYPES.BETA;
-
-            return null;
-        }
-
         private string CheckChibiOS(string existingfw, string chibiosurl)
         {
             try
@@ -759,7 +677,6 @@ namespace MissionPlanner.Utilities
         /// <param name="filename"></param>
         public bool UploadPX4(string filename, BoardDetect.boards board)
         {
-            Uploader up;
             updateProgress(-1, "Reading Hex File");
             px4uploader.Firmware fw;
             try
@@ -780,11 +697,18 @@ namespace MissionPlanner.Utilities
 
             while (DateTime.Now < DEADLINE)
             {
+                log.Info(DateTime.Now.Millisecond + " get Ports ");
                 string[] allports = SerialPort.GetPortNames();
 
-                foreach (string port in allports)
+                var foundboard = false;
+                var result = false;
+                Uploader uploader = null;
+
+                Parallel.ForEach(allports, (port,state) =>
                 {
                     log.Info(DateTime.Now.Millisecond + " Trying Port " + port);
+
+                    Uploader up;
 
                     try
                     {
@@ -793,28 +717,39 @@ namespace MissionPlanner.Utilities
                     catch (Exception ex)
                     {
                         //System.Threading.Thread.Sleep(50);
-                        Console.WriteLine(ex.Message);
-                        continue;
+                        log.Debug(port + " " +ex.Message);
+                        return;
                     }
 
                     try
                     {
+                        log.Info(DateTime.Now.Millisecond + " Trying identify " + port);
                         up.identify();
-                        updateProgress(-1, "Identify");
-                        log.InfoFormat("Found board type {0} boardrev {1} bl rev {2} fwmax {3} on {4}", up.board_type,
-                            up.board_rev, up.bl_rev, up.fw_maxsize, port);
+
+                        updateProgress(-1, port + " Identify");
+                        log.InfoFormat(
+                            "Found board type {0} brdrev {1} blrev {2} fwmax {3} chip {5:X} chipdes {6} on {4}",
+                            up.board_type,
+                            up.board_rev, up.bl_rev, up.fw_maxsize, port, up.chip, up.chip_desc);
 
                         up.ProgressEvent += new Uploader.ProgressEventHandler(up_ProgressEvent);
                         up.LogEvent += new Uploader.LogEventHandler(up_LogEvent);
+                        state.Break();
+                        foundboard = true;
+                        uploader = up;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        Console.WriteLine("Not There..");
-                        //Console.WriteLine(ex.Message);
+                        log.Debug(port + " Not There.. " + ex.Message);
                         up.close();
-                        continue;
+                        return;
                     }
+                });
 
+                log.Info(DateTime.Now.Millisecond + " Portscan done found:" + foundboard);
+
+                if (foundboard)
+                {
                     updateProgress(-1, "Connecting");
 
                     // test if pausing here stops - System.TimeoutException: The write timed out.
@@ -822,27 +757,29 @@ namespace MissionPlanner.Utilities
 
                     try
                     {
-                        up.currentChecksum(fw);
+                        uploader.currentChecksum(fw);
                     }
                     catch (IOException ex)
                     {
                         log.Error(ex);
                         CustomMessageBox.Show("lost communication with the board.", "lost comms");
-                        up.close();
+                        uploader.close();
+                        result = false;
                         return false;
                     }
                     catch
                     {
-                        up.__reboot();
-                        up.close();
+                        uploader.__reboot();
+                        uploader.close();
                         CustomMessageBox.Show(Strings.NoNeedToUpload);
+                        result = true;
                         return true;
                     }
 
                     try
                     {
                         updateProgress(0, "Upload");
-                        up.upload(fw);
+                        uploader.upload(fw);
                         updateProgress(100, "Upload Done");
                     }
                     catch (Exception ex)
@@ -850,17 +787,16 @@ namespace MissionPlanner.Utilities
                         updateProgress(0, "ERROR: " + ex.Message);
                         log.Info(ex);
                         Console.WriteLine(ex.ToString());
+                        result = false;
                         return false;
                     }
                     finally
                     {
-                        up.close();
+                        uploader.close();
                     }
 
-                    // wait for IO firmware upgrade and boot to a mavlink state
-                    CustomMessageBox.Show(Strings.PleaseWaitForTheMusicalTones);
-
-                    return true;
+                    result = true;
+                    return result;
                 }
             }
 
@@ -871,7 +807,7 @@ namespace MissionPlanner.Utilities
         private void AttemptRebootToBootloader()
         {
             string[] allports = SerialPort.GetPortNames();
-            
+
             List<Task<bool>> tasklist = new List<Task<bool>>();
             // check if its in BL mode already
             foreach (string port in allports)
@@ -879,7 +815,8 @@ namespace MissionPlanner.Utilities
                 log.Info(DateTime.Now.Millisecond + " Trying Port " + port);
                 try
                 {
-                    var task = Task.Run(() => {
+                    var task = Task.Run(() =>
+                    {
                         using (var up = new Uploader(port, 115200))
                         {
                             up.identify();
@@ -1031,8 +968,8 @@ namespace MissionPlanner.Utilities
                     {
                         up.identify();
                         updateProgress(-1, "Identify");
-                        log.InfoFormat("Found board type {0} boardrev {1} bl rev {2} fwmax {3} on {4}", up.board_type,
-                            up.board_rev, up.bl_rev, up.fw_maxsize, port);
+                        log.InfoFormat("Found board type {0} brdrev {1} blrev {2} fwmax {3} chip {5:X} chipdes {6} on {4}", up.board_type,
+                        up.board_rev, up.bl_rev, up.fw_maxsize, port, up.chip, up.chip_desc);
                     }
                     catch (Exception)
                     {
@@ -1081,7 +1018,7 @@ namespace MissionPlanner.Utilities
                         up.board_type == 1152 || up.board_type == 1210 || up.board_type == 1351 || up.board_type == 1352 ||
                         up.board_type == 1411 || up.board_type == 1520)
                     {
-//VR boards have no tone alarm
+                        //VR boards have no tone alarm
                         if (up.board_type == 1140)
                             CustomMessageBox.Show("Upload complete! Please unplug and reconnect board.");
                         else
@@ -1111,11 +1048,11 @@ namespace MissionPlanner.Utilities
             PingReply pingReply = pingParrotVehicle(ping);
 
             updateProgress(0, "Trying to connect to " + vehicleName);
-            
+
             if (pingReply == null || pingReply.Status != IPStatus.Success)
             {
                 bool ssidFound = isParrotWifiConnected(vehicleName);
-                
+
                 if (!ssidFound)
                 {
                     CustomMessageBox.Show("Please connect to " + vehicleName + " Wifi now and after that press OK", vehicleName, MessageBoxButtons.OK);
@@ -1254,9 +1191,9 @@ namespace MissionPlanner.Utilities
                                     initAPLinesIndex[2] != (initAPLinesIndex[1] + 1) ||
                                     dragonLineIndex != (initAPLinesIndex[2] + 1))
                                 {
-                                    foreach(int i in initAPLinesIndex)
+                                    foreach (int i in initAPLinesIndex)
                                     {
-                                        if(i != -1)
+                                        if (i != -1)
                                         {
                                             if (i < dragonLineIndex)
                                                 dragonLineIndex--;
@@ -1354,7 +1291,7 @@ namespace MissionPlanner.Utilities
             {
                 AdbClient.Instance.KillAdb();
             }
-            
+
             return true;
         }
 
@@ -1399,7 +1336,7 @@ namespace MissionPlanner.Utilities
 
         void up_ProgressEvent(double completed)
         {
-            updateProgress((int) completed, _message);
+            updateProgress((int)completed, _message);
         }
 
         /// <summary>
@@ -1467,7 +1404,7 @@ namespace MissionPlanner.Utilities
         }
 
         public bool UploadArduino(string comport, string filename, BoardDetect.boards board)
-        { 
+        {
             byte[] FLASH = new byte[1];
             try
             {
@@ -1543,7 +1480,7 @@ namespace MissionPlanner.Utilities
 
                     while (start < FLASH.Length)
                     {
-                        updateProgress((int) ((start/(float) FLASH.Length)*100), Strings.VerifyFirmware);
+                        updateProgress((int)((start / (float)FLASH.Length) * 100), Strings.VerifyFirmware);
                         port.setaddress(start);
                         //log.Info("Downloading " + length + " at " + start);
                         port.downloadflash(length).CopyTo(flashverify, start);
@@ -1573,7 +1510,7 @@ namespace MissionPlanner.Utilities
 
                 try
                 {
-                    ((SerialPort) port).Open();
+                    ((SerialPort)port).Open();
                 }
                 catch
                 {
@@ -1583,7 +1520,7 @@ namespace MissionPlanner.Utilities
 
                 try
                 {
-                    ((SerialPort) port).Close();
+                    ((SerialPort)port).Close();
                 }
                 catch
                 {
@@ -1615,7 +1552,7 @@ namespace MissionPlanner.Utilities
         /// <returns></returns>
         byte[] readIntelHEXv2(StreamReader sr)
         {
-            byte[] FLASH = new byte[1024*1024];
+            byte[] FLASH = new byte[1024 * 1024];
 
             int optionoffset = 0;
             int total = 0;
@@ -1623,7 +1560,7 @@ namespace MissionPlanner.Utilities
 
             while (!sr.EndOfStream)
             {
-                updateProgress((int) (((float) sr.BaseStream.Position/(float) sr.BaseStream.Length)*100),
+                updateProgress((int)(((float)sr.BaseStream.Position / (float)sr.BaseStream.Length) * 100),
                     Strings.ReadingHex);
 
                 string line = sr.ReadLine();
@@ -1637,10 +1574,10 @@ namespace MissionPlanner.Utilities
 
                     if (option == 0)
                     {
-                        string data = line.Substring(9, length*2);
+                        string data = line.Substring(9, length * 2);
                         for (int i = 0; i < length; i++)
                         {
-                            byte byte1 = Convert.ToByte(data.Substring(i*2, 2), 16);
+                            byte byte1 = Convert.ToByte(data.Substring(i * 2, 2), 16);
                             FLASH[optionoffset + address] = byte1;
                             address++;
                             if ((optionoffset + address) > total)
@@ -1649,7 +1586,7 @@ namespace MissionPlanner.Utilities
                     }
                     else if (option == 2)
                     {
-                        optionoffset = (int) Convert.ToUInt16(line.Substring(9, 4), 16) << 4;
+                        optionoffset = (int)Convert.ToUInt16(line.Substring(9, 4), 16) << 4;
                     }
                     else if (option == 1)
                     {
@@ -1658,11 +1595,11 @@ namespace MissionPlanner.Utilities
                     int checksum = Convert.ToInt32(line.Substring(line.Length - 2, 2), 16);
 
                     byte checksumact = 0;
-                    for (int z = 0; z < ((line.Length - 1 - 2)/2); z++) // minus 1 for : then mins 2 for checksum itself
+                    for (int z = 0; z < ((line.Length - 1 - 2) / 2); z++) // minus 1 for : then mins 2 for checksum itself
                     {
-                        checksumact += Convert.ToByte(line.Substring(z*2 + 1, 2), 16);
+                        checksumact += Convert.ToByte(line.Substring(z * 2 + 1, 2), 16);
                     }
-                    checksumact = (byte) (0x100 - checksumact);
+                    checksumact = (byte)(0x100 - checksumact);
 
                     if (checksumact != checksum)
                     {

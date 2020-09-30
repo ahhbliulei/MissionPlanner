@@ -5,7 +5,6 @@ using System.Drawing.Imaging;
 using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
-using MissionPlanner.Utilities.Drawing;
 
 namespace MissionPlanner.Maps
 {

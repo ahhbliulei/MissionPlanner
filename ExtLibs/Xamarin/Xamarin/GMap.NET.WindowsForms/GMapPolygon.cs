@@ -1,14 +1,13 @@
-﻿
-using MissionPlanner.Utilities.Drawing;
-
-namespace GMap.NET.WindowsForms
+﻿namespace GMap.NET.WindowsForms
 {
     using GMap.NET;
     //using System.Windows.Forms;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.Runtime.Serialization;
+    using Extensions = Extensions;
 
     /// <summary>
     /// GMap.NET polygon

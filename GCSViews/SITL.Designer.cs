@@ -47,6 +47,8 @@ namespace MissionPlanner.GCSViews
             this.label1 = new System.Windows.Forms.Label();
             this.NUM_heading = new System.Windows.Forms.NumericUpDown();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.but_swarmseq = new MissionPlanner.Controls.MyButton();
+            this.but_swarmlink = new MissionPlanner.Controls.MyButton();
             this.chk_wipe = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txt_cmdline = new System.Windows.Forms.TextBox();
@@ -131,10 +133,9 @@ namespace MissionPlanner.GCSViews
             // 
             // pictureBoxheli
             // 
-            this.pictureBoxheli.Image = global::MissionPlanner.Properties.Resources.light_06;
-            this.pictureBoxheli.ImageNormal = global::MissionPlanner.Properties.Resources.light_06;
-            this.pictureBoxheli.ImageOver = global::MissionPlanner.Properties.Resources._01_06;
             resources.ApplyResources(this.pictureBoxheli, "pictureBoxheli");
+            this.pictureBoxheli.ImageNormal = ((System.Drawing.Image)(resources.GetObject("pictureBoxheli.ImageNormal")));
+            this.pictureBoxheli.ImageOver = ((System.Drawing.Image)(resources.GetObject("pictureBoxheli.ImageOver")));
             this.pictureBoxheli.Name = "pictureBoxheli";
             this.pictureBoxheli.selected = false;
             this.pictureBoxheli.TabStop = false;
@@ -143,10 +144,9 @@ namespace MissionPlanner.GCSViews
             // 
             // pictureBoxquad
             // 
-            this.pictureBoxquad.Image = global::MissionPlanner.Properties.Resources.light_05;
-            this.pictureBoxquad.ImageNormal = global::MissionPlanner.Properties.Resources.light_05;
-            this.pictureBoxquad.ImageOver = global::MissionPlanner.Properties.Resources._01_05;
             resources.ApplyResources(this.pictureBoxquad, "pictureBoxquad");
+            this.pictureBoxquad.ImageNormal = ((System.Drawing.Image)(resources.GetObject("pictureBoxquad.ImageNormal")));
+            this.pictureBoxquad.ImageOver = ((System.Drawing.Image)(resources.GetObject("pictureBoxquad.ImageOver")));
             this.pictureBoxquad.Name = "pictureBoxquad";
             this.pictureBoxquad.selected = false;
             this.pictureBoxquad.TabStop = false;
@@ -155,10 +155,9 @@ namespace MissionPlanner.GCSViews
             // 
             // pictureBoxrover
             // 
-            this.pictureBoxrover.Image = global::MissionPlanner.Properties.Resources.light_03;
-            this.pictureBoxrover.ImageNormal = global::MissionPlanner.Properties.Resources.light_03;
-            this.pictureBoxrover.ImageOver = global::MissionPlanner.Properties.Resources._01_03;
             resources.ApplyResources(this.pictureBoxrover, "pictureBoxrover");
+            this.pictureBoxrover.ImageNormal = ((System.Drawing.Image)(resources.GetObject("pictureBoxrover.ImageNormal")));
+            this.pictureBoxrover.ImageOver = ((System.Drawing.Image)(resources.GetObject("pictureBoxrover.ImageOver")));
             this.pictureBoxrover.Name = "pictureBoxrover";
             this.pictureBoxrover.selected = false;
             this.pictureBoxrover.TabStop = false;
@@ -167,10 +166,9 @@ namespace MissionPlanner.GCSViews
             // 
             // pictureBoxplane
             // 
-            this.pictureBoxplane.Image = global::MissionPlanner.Properties.Resources.light_01;
-            this.pictureBoxplane.ImageNormal = global::MissionPlanner.Properties.Resources.light_01;
-            this.pictureBoxplane.ImageOver = global::MissionPlanner.Properties.Resources._01_01;
             resources.ApplyResources(this.pictureBoxplane, "pictureBoxplane");
+            this.pictureBoxplane.ImageNormal = ((System.Drawing.Image)(resources.GetObject("pictureBoxplane.ImageNormal")));
+            this.pictureBoxplane.ImageOver = ((System.Drawing.Image)(resources.GetObject("pictureBoxplane.ImageOver")));
             this.pictureBoxplane.Name = "pictureBoxplane";
             this.pictureBoxplane.selected = false;
             this.pictureBoxplane.TabStop = false;
@@ -212,6 +210,8 @@ namespace MissionPlanner.GCSViews
             // groupBox4
             // 
             resources.ApplyResources(this.groupBox4, "groupBox4");
+            this.groupBox4.Controls.Add(this.but_swarmseq);
+            this.groupBox4.Controls.Add(this.but_swarmlink);
             this.groupBox4.Controls.Add(this.chk_wipe);
             this.groupBox4.Controls.Add(this.label8);
             this.groupBox4.Controls.Add(this.txt_cmdline);
@@ -221,6 +221,20 @@ namespace MissionPlanner.GCSViews
             this.groupBox4.Controls.Add(this.num_simspeed);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.TabStop = false;
+            // 
+            // but_swarmseq
+            // 
+            resources.ApplyResources(this.but_swarmseq, "but_swarmseq");
+            this.but_swarmseq.Name = "but_swarmseq";
+            this.but_swarmseq.UseVisualStyleBackColor = true;
+            this.but_swarmseq.Click += new System.EventHandler(this.but_swarmseq_Click);
+            // 
+            // but_swarmlink
+            // 
+            resources.ApplyResources(this.but_swarmlink, "but_swarmlink");
+            this.but_swarmlink.Name = "but_swarmlink";
+            this.but_swarmlink.UseVisualStyleBackColor = true;
+            this.but_swarmlink.Click += new System.EventHandler(this.but_swarmlink_Click);
             // 
             // chk_wipe
             // 
@@ -275,7 +289,10 @@ namespace MissionPlanner.GCSViews
             resources.GetString("cmb_model.Items25"),
             resources.GetString("cmb_model.Items26"),
             resources.GetString("cmb_model.Items27"),
-            resources.GetString("cmb_model.Items28")});
+            resources.GetString("cmb_model.Items28"),
+            resources.GetString("cmb_model.Items29"),
+            resources.GetString("cmb_model.Items30"),
+            resources.GetString("cmb_model.Items31")});
             resources.ApplyResources(this.cmb_model, "cmb_model");
             this.cmb_model.Name = "cmb_model";
             // 
@@ -350,5 +367,7 @@ namespace MissionPlanner.GCSViews
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txt_cmdline;
         private System.Windows.Forms.CheckBox chk_wipe;
+        private MyButton but_swarmseq;
+        private MyButton but_swarmlink;
     }
 }

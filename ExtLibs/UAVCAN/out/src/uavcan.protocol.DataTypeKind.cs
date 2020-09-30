@@ -1,6 +1,4 @@
 
-
-
 using uint8_t = System.Byte;
 using uint16_t = System.UInt16;
 using uint32_t = System.UInt32;
@@ -14,12 +12,12 @@ using int64_t = System.Int64;
 using float32 = System.Single;
 
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace UAVCAN
 {
 public partial class uavcan {
-
 
 
 
@@ -36,40 +34,15 @@ static uint32_t decode_uavcan_protocol_DataTypeKind(CanardRxTransfer transfer, u
 
 static void _encode_uavcan_protocol_DataTypeKind(uint8_t[] buffer, uavcan_protocol_DataTypeKind msg, uavcan_serializer_chunk_cb_ptr_t chunk_cb, object ctx, bool tao) {
 
-
-
-
-
-
     memset(buffer,0,8);
-
     canardEncodeScalar(buffer, 0, 8, msg.value);
-
     chunk_cb(buffer, 8, ctx);
-
-
-
-
-
 }
 
 static void _decode_uavcan_protocol_DataTypeKind(CanardRxTransfer transfer,ref uint32_t bit_ofs, uavcan_protocol_DataTypeKind msg, bool tao) {
 
-
-
-
-
-
-
-
     canardDecodeScalar(transfer, bit_ofs, 8, false, ref msg.value);
-
-
     bit_ofs += 8;
-
-
-
-
 
 }
 

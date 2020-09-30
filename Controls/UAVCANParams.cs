@@ -1,10 +1,10 @@
-﻿using System;
+﻿using log4net;
+using MissionPlanner.Utilities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,9 +13,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
-using log4net;
-using MissionPlanner.Controls;
-using MissionPlanner.Utilities;
 using UAVCAN;
 
 namespace MissionPlanner.Controls
@@ -37,7 +34,7 @@ namespace MissionPlanner.Controls
         private UAVCAN.uavcan _can;
         private byte _node;
         private List<UAVCAN.uavcan.uavcan_protocol_param_GetSet_res> _paramlist;
-        private System.Timers.Timer filterTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer _filterTimer = new System.Timers.Timer();
         private List<GitHubContent.FileInfo> paramfiles;
         public UAVCANParams(UAVCAN.uavcan can, byte node, List<UAVCAN.uavcan.uavcan_protocol_param_GetSet_res> paramlist)
         {
@@ -46,8 +43,10 @@ namespace MissionPlanner.Controls
             _node = node;
 
             InitializeComponent();
+
+            this.Text = "UAVCAN Params - " + node;
         }
-        
+
         public void Activate()
         {
             startup = true;
@@ -58,15 +57,15 @@ namespace MissionPlanner.Controls
             BUT_rerequestparams.Enabled = true;
             BUT_reset_params.Enabled = true;
             BUT_commitToFlash.Visible = true;
-            
+
 
             Params.Enabled = false;
 
             foreach (DataGridViewColumn col in Params.Columns)
             {
-                if (!String.IsNullOrEmpty(Settings.Instance["rawparam_" + col.Name + "_width"]))
+                if (!String.IsNullOrEmpty(Settings.Instance["rawparamuavcan_" + col.Name + "_width"]))
                 {
-                    col.Width = Math.Max(50,Settings.Instance.GetInt32("rawparam_" + col.Name + "_width"));
+                    col.Width = Math.Max(50, Settings.Instance.GetInt32("rawparamuavcan_" + col.Name + "_width"));
                     log.InfoFormat("{0} to {1}", col.Name, col.Width);
                 }
             }
@@ -86,7 +85,7 @@ namespace MissionPlanner.Controls
         {
             foreach (DataGridViewColumn col in Params.Columns)
             {
-                Settings.Instance["rawparam_" + col.Name + "_width"] = col.Width.ToString();
+                Settings.Instance["rawparamuavcan_" + col.Name + "_width"] = col.Width.ToString();
             }
         }
 
@@ -244,8 +243,6 @@ namespace MissionPlanner.Controls
                 if (dr == DialogResult.OK)
                 {
                     loadparamsfromfile(ofd.FileName, true);
-
-                        Activate();
                 }
             }
         }
@@ -253,7 +250,7 @@ namespace MissionPlanner.Controls
         private void BUT_rerequestparams_Click(object sender, EventArgs e)
         {
 
-            if ( (int)DialogResult.OK ==
+            if ((int)DialogResult.OK ==
                 CustomMessageBox.Show(Strings.WarningUpdateParamList, Strings.ERROR, MessageBoxButtons.OKCancel))
             {
                 ((Control)sender).Enabled = false;
@@ -347,10 +344,12 @@ namespace MissionPlanner.Controls
             var temp = new List<string>();
             foreach (var item in _changes.Keys)
             {
-                temp.Add((string)item);
+                temp.Add((string) item);
             }
 
             temp.SortENABLE();
+
+            int failed = 0;
 
             foreach (string value in temp)
             {
@@ -388,13 +387,20 @@ namespace MissionPlanner.Controls
                     {
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    CustomMessageBox.Show("Set " + value + " Failed");
+                    log.Error(ex);
+                    failed++;
+                    CustomMessageBox.Show("Set " + value + " Failed " + ex.ToString());
                 }
             }
 
-            CustomMessageBox.Show("Parameters successfully saved.", "Saved");
+            _can.SaveConfig(_node);
+
+            if (failed > 0)
+                CustomMessageBox.Show("Some Parameters Failed to be saved.", "Saved");
+            else
+                CustomMessageBox.Show("Parameters successfully saved.", "Saved");
         }
 
         private void chk_modified_CheckedChanged(object sender, EventArgs e)
@@ -448,7 +454,7 @@ namespace MissionPlanner.Controls
 
         private void FilterTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            filterTimer.Stop();
+            _filterTimer.Stop();
             Invoke((Action)delegate
            {
                filterList(txt_search.Text);
@@ -503,9 +509,7 @@ namespace MissionPlanner.Controls
 
                 if (offline && !set)
                 {
-                    set = true;
-                    MainV2.comPort.MAV.param.Add(new MAVLink.MAVLinkParam(name, double.Parse(value),
-                        MAVLink.MAV_PARAM_TYPE.REAL32));
+                    set = true;                    
                 }
 
                 if (set)
@@ -526,7 +530,7 @@ namespace MissionPlanner.Controls
                 {
                     list += item + " ";
                 }
-                CustomMessageBox.Show("Missing " + missed + " params\n"+ list, "No matching Params", MessageBoxButtons.OK);
+                CustomMessageBox.Show("Missing " + missed + " params\n" + list, "No matching Params", MessageBoxButtons.OK);
             }
         }
         private void OnParamsOnSortCompare(object sender, DataGridViewSortCompareEventArgs args)
@@ -598,18 +602,19 @@ namespace MissionPlanner.Controls
                         Params[e.ColumnIndex, e.RowIndex].Value = "-1";
                 }
 
-                double min = 0;
-                double max = 0;
-
-                var value = (string) Params[e.ColumnIndex, e.RowIndex].Value;
-
-                var newvalue = float.Parse(value.Replace(',', '.'), CultureInfo.InvariantCulture);
-
-       
+                var value = (string)Params[e.ColumnIndex, e.RowIndex].Value;
 
                 Params[e.ColumnIndex, e.RowIndex].Style.BackColor = Color.Green;
-                _changes[Params[Command.Index, e.RowIndex].Value] =
-                    float.Parse(((string) Params[e.ColumnIndex, e.RowIndex].Value));
+                float asfloat = 0;
+                if (float.TryParse((string)Params[e.ColumnIndex, e.RowIndex].Value, out asfloat))
+                {
+                    _changes[Params[Command.Index, e.RowIndex].Value] = asfloat;
+                }
+                else
+                {
+                    _changes[Params[Command.Index, e.RowIndex].Value] =
+                        ((string)Params[e.ColumnIndex, e.RowIndex].Value);
+                }
             }
             catch (Exception)
             {
@@ -621,11 +626,11 @@ namespace MissionPlanner.Controls
         }
         private void txt_search_TextChanged(object sender, EventArgs e)
         {
-            filterTimer.Elapsed -= FilterTimerOnElapsed;
-            filterTimer.Stop();
-            filterTimer.Interval = 500;
-            filterTimer.Elapsed += FilterTimerOnElapsed;
-            filterTimer.Start();
+            _filterTimer.Elapsed -= FilterTimerOnElapsed;
+            _filterTimer.Stop();
+            _filterTimer.Interval = 500;
+            _filterTimer.Elapsed += FilterTimerOnElapsed;
+            _filterTimer.Start();
         }
     }
 }

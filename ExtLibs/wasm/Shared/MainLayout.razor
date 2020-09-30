@@ -1,6 +1,7 @@
 @inherits LayoutComponentBase
 @inject IJSRuntime JSRuntime
 @inject HttpClient Http
+@using Sotsera.Blazor.Toaster
 @using System.IO
 
 <div class="sidebar">
@@ -9,7 +10,6 @@
 
 <div class="main">
     <div class="top-row px-4">
-        <!--<a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>-->
         By Michael Oborne
         <div id="g-signin2" class="g-signin2"></div>
     </div>
@@ -23,14 +23,17 @@
 
 </div>
 
-@code
+<ToastContainer />
+
+@functions
 {
     private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
     public static string googleid = "";
     private bool _loading = true;
 
-    public bool Loading {
+    public bool Loading
+    {
         get { return _loading; }
         set { log.Info("Loading " + _loading); _loading = value; }
     }
@@ -41,38 +44,38 @@
         googleid = id;
     }
 
+    protected override void OnInitialized()
+    {
+        log.Info("MainLayout OnInitialized done");
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        GetFile("ParameterMetaDataBackup.xml");
-
-        Directory.CreateDirectory("graphs");
-
-        GetFile("graphs/ekf3Graphs.xml");
-        GetFile("graphs/ekfGraphs.xml");
-        GetFile("graphs/mavgraphs.xml");
-        GetFile("graphs/mavgraphs2.xml");
-        GetFile("graphs/mavgraphsMP.xml");
-
         Loading = false;
+
+        await GetFile("ParameterMetaDataBackup.xml");
+
+        log.Info("MainLayout OnInitializedAsync done");
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
 
-        if(googleid == "")
-            JSRuntime.InvokeAsync<object>("renderButton", new { });
+        if (googleid == "")
+            JSRuntime.InvokeAsync<object>
+    ("renderButton", new { });
 
         Console.WriteLine("MainLayout OnAfterRender Done");
     }
 
-    async void GetFile(string filename)
+    public async Task GetFile(string filename)
     {
         if (!File.Exists(filename))
         {
-            log.Info("get "+filename);
+            log.Info("get " + filename);
             var content = await Http.GetStringAsync((filename));
-            log.Info("get "+filename+" done");
+            log.Info("get " + filename + " done");
 
             File.WriteAllText(filename, content);
         }

@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using GMap.NET;
+using GMap.NET.Drawing;
 using GMap.NET.WindowsForms;
 using MissionPlanner.Utilities;
-using MissionPlanner.Utilities.Drawing;
 
 namespace MissionPlanner.Maps
 {
@@ -15,6 +15,7 @@ namespace MissionPlanner.Maps
     {
         public float? Bearing;
 
+        static readonly System.Drawing.Size SizeSt = Resources.marker_02.ToBitmap().Size;
 
         //static Bitmap localcache1 = Resources.shadow50;
         static Bitmap localcache2 = Resources.marker_02;
@@ -24,7 +25,7 @@ namespace MissionPlanner.Maps
         public GMapMarkerRallyPt(PointLatLng p)
             : base(p)
         {
-            Size = localcache2.Size;
+            Size = SizeSt;
             Offset = new Point(-10, -40);
         }
 

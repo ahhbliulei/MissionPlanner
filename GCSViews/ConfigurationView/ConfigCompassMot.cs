@@ -1,9 +1,9 @@
-﻿using System;
+﻿using MissionPlanner.Controls;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using MissionPlanner.Controls;
 using ZedGraph;
 
 namespace MissionPlanner.GCSViews.ConfigurationView
@@ -63,7 +63,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
                 current.Clear();
                 try
                 {
-                    MainV2.comPort.doCommand(MAVLink.MAV_CMD.PREFLIGHT_CALIBRATION, 0, 0, 0, 0, 0, 1, 0);
+                    MainV2.comPort.doCommand((byte)MainV2.comPort.sysidcurrent, (byte)MainV2.comPort.compidcurrent, MAVLink.MAV_CMD.PREFLIGHT_CALIBRATION, 0, 0, 0, 0, 0, 1, 0);
                 }
                 catch
                 {
@@ -80,15 +80,15 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             BUT_compassmot.Text = lbl_finish.Text;
             DoCompassMot();
 
-  
+
             timer1.Start();
         }
 
         private bool ProcessCompassMotMSG(MAVLink.MAVLinkMessage arg)
         {
-            if (arg.msgid == (uint) MAVLink.MAVLINK_MSG_ID.COMPASSMOT_STATUS)
+            if (arg.msgid == (uint)MAVLink.MAVLINK_MSG_ID.COMPASSMOT_STATUS)
             {
-                var status = (MAVLink.mavlink_compassmot_status_t) arg.data;
+                var status = (MAVLink.mavlink_compassmot_status_t)arg.data;
 
                 interferencelist.Add(status.throttle / 10.0, status.interference);
                 currentlist.Add(status.throttle / 10.0, status.current);
@@ -165,7 +165,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             var message = new StringBuilder();
 
-            MainV2.comPort.MAV.cs.messages.ForEach(x => { message.AppendLine(x); });
+            MainV2.comPort.MAV.cs.messages.ForEach(x => { message.AppendLine(x.message); });
 
             txt_status.Text = message.ToString();
             txt_status.SelectionStart = txt_status.Text.Length;

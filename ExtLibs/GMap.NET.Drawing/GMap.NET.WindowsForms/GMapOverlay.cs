@@ -1,4 +1,7 @@
 ﻿
+using System.Drawing;
+using System.Linq;
+
 namespace GMap.NET.WindowsForms
 {
     //using System.Windows.Forms;
@@ -292,7 +295,7 @@ namespace GMap.NET.WindowsForms
          {
             if(Control.RoutesEnabled)
             {
-               foreach(GMapRoute r in Routes)
+               foreach(GMapRoute r in Routes.ToArray())
                {
                   if(r.IsVisible)
                   {
@@ -305,7 +308,7 @@ namespace GMap.NET.WindowsForms
              {
                  var viewarea = Control.ViewArea;
                  viewarea.Inflate(1, 1);
-                 foreach (GMapPolygon r in Polygons)
+                 foreach (GMapPolygon r in Polygons.ToArray())
                  {
                      if (r.Points.Count <= 1)
                          continue;
@@ -330,7 +333,7 @@ namespace GMap.NET.WindowsForms
              if(Control.MarkersEnabled)
             {
                // markers
-               foreach(GMapMarker m in Markers)
+               foreach(GMapMarker m in Markers.ToArray())
                {
                   //if(m.IsVisible && (m.DisableRegionCheck || Control.Core.currentRegion.Contains(m.LocalPosition.X, m.LocalPosition.Y)))
                   if(m.IsVisible || m.DisableRegionCheck)
@@ -340,7 +343,7 @@ namespace GMap.NET.WindowsForms
                }
 
                // tooltips above
-               foreach(GMapMarker m in Markers)
+               foreach(GMapMarker m in Markers.ToArray())
                {
                   //if(m.ToolTip != null && m.IsVisible && Control.Core.currentRegion.Contains(m.LocalPosition.X, m.LocalPosition.Y))
                   if(m.ToolTip != null && m.IsVisible)

@@ -16,6 +16,15 @@ namespace MissionPlanner.Comms
         public AndroidSerial(SerialInputOutputManager serialIoManager)
         {
             this.serialIoManager = serialIoManager;
+
+            serialIoManager.DataReceived += (sender, e) =>
+            {
+                foreach (var b in e.Data)
+                {
+                    readbuffer.Add(b);
+                }
+            };
+            serialIoManager.ErrorReceived += (sender, e) => {  };
         }
 
         public override bool CanRead => true;
@@ -38,10 +47,10 @@ namespace MissionPlanner.Comms
 
         public string PortName { get; set; }
         public int ReadBufferSize { get; set; }
-        public int ReadTimeout { get; set; }
+        public override int ReadTimeout { get; set; }
         public bool RtsEnable { get; set; }
         public int WriteBufferSize { get; set; }
-        public int WriteTimeout { get; set; }
+        public override int WriteTimeout { get; set; }
 
         public override long Position
         {
@@ -49,7 +58,7 @@ namespace MissionPlanner.Comms
             set => throw new NotImplementedException();
         }
 
-        public void Close()
+        public override void Close()
         {
             serialIoManager.Close();
         }
@@ -59,7 +68,7 @@ namespace MissionPlanner.Comms
             readbuffer.Clear();
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
             serialIoManager.Dispose();
         }
@@ -69,7 +78,7 @@ namespace MissionPlanner.Comms
             serialIoManager.Open();
         }
 
-        public int ReadByte()
+        public override int ReadByte()
         {
             var ans = new byte[] { 0 };
             var count = Read(ans, 0, 1);
@@ -144,6 +153,12 @@ namespace MissionPlanner.Comms
 
         public override int Read(byte[] buffer, int offset, int count)
         {
+            var deadline = DateTime.Now.AddMilliseconds(ReadTimeout);
+            do
+            {
+                Thread.Sleep(1);
+            } while (readbuffer.Length() < count && DateTime.Now < deadline);
+
             var read = Math.Min(count, readbuffer.Length());
             for (int a = 0; a < read; a++)
             {
@@ -154,6 +169,7 @@ namespace MissionPlanner.Comms
 
         public override void Flush()
         {
+            Thread.Sleep(1);
         }
 
         public override long Seek(long offset, SeekOrigin origin)

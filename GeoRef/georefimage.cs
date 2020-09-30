@@ -1,12 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Windows.Forms;
-using System.Text.RegularExpressions;
-using System.Globalization;
-using GMap.NET.WindowsForms;
+﻿using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
-using MissionPlanner.Utilities;
 using log4net;
+using MissionPlanner.Utilities;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace MissionPlanner.GeoRef
 {
@@ -73,7 +73,9 @@ namespace MissionPlanner.GeoRef
         {
             log.Info(text);
 
-            var inv = new MethodInvoker(delegate {
+            var inv = new MethodInvoker(delegate
+            {
+                text.Replace("\n", Environment.NewLine);
                 TXT_outputlog.AppendText(text);
                 TXT_outputlog.Refresh();
             });
@@ -171,21 +173,21 @@ namespace MissionPlanner.GeoRef
                             chk_cammsg.Checked, AppendText);
                         if (georef.picturesInfo != null)
                             georef.CreateReportFiles(georef.picturesInfo, dirPictures, seconds,
-                                (double) num_camerarotation.Value, (double) num_hfov.Value, (double) num_vfov.Value,
+                                (double)num_camerarotation.Value, (double)num_hfov.Value, (double)num_vfov.Value,
                                 AppendText, httpGeoRefKML);
                         break;
                     case PROCESSING_MODE.CAM_MSG:
-                        georef.picturesInfo = georef.doworkCAM(logFilePath, dirPictures, UseGpsorGPS2(), AppendText);
+                        georef.picturesInfo = georef.doworkCAM(logFilePath, dirPictures, UseGpsorGPS2(), AppendText, (int)num_dropfromstart.Value, (int)num_dropend.Value);
                         if (georef.picturesInfo != null)
                             georef.CreateReportFiles(georef.picturesInfo, dirPictures, seconds,
-                                (double) num_camerarotation.Value, (double) num_hfov.Value, (double) num_vfov.Value,
+                                (double)num_camerarotation.Value, (double)num_hfov.Value, (double)num_vfov.Value,
                                 AppendText, httpGeoRefKML, chk_camusegpsalt.Checked);
                         break;
                     case PROCESSING_MODE.TRIG:
-                        georef.picturesInfo = georef.doworkTRIG(logFilePath, dirPictures, UseGpsorGPS2(), AppendText);
+                        georef.picturesInfo = georef.doworkTRIG(logFilePath, dirPictures, UseGpsorGPS2(), AppendText, (int)num_dropfromstart.Value, (int)num_dropend.Value);
                         if (georef.picturesInfo != null)
                             georef.CreateReportFiles(georef.picturesInfo, dirPictures, seconds,
-                                (double) num_camerarotation.Value, (double) num_hfov.Value, (double) num_vfov.Value,
+                                (double)num_camerarotation.Value, (double)num_hfov.Value, (double)num_vfov.Value,
                                 AppendText, httpGeoRefKML, chk_trigusergpsalt.Checked);
                         break;
                 }
@@ -351,7 +353,7 @@ namespace MissionPlanner.GeoRef
 
         private void CHECK_AMSLAlt_Use_CheckedChanged(object sender, EventArgs e)
         {
-            georef.useAMSLAlt = ((CheckBox) sender).Checked;
+            georef.useAMSLAlt = ((CheckBox)sender).Checked;
 
             txt_basealt.Enabled = !georef.useAMSLAlt;
         }

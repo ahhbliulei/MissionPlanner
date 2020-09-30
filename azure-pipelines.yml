@@ -8,12 +8,13 @@ trigger:
 - refs/tags/beta
 
 pool:
-  vmImage: 'VS2017-Win2016'
+  vmImage: 'windows-2019'
 
 variables:
   solution: '**/MissionPlanner.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  NUGET_PACKAGES: D:\a\1\s\packages
 
 steps:
 - script: date /t
@@ -21,16 +22,25 @@ steps:
 - script: dir /s
   workingDirectory: $(Agent.BuildDirectory)
   displayName: List contents of a folder
-- script: .nuget\nuget.exe update -self
-  workingDirectory: $(Build.Repository.LocalPath)
-- script: .nuget\nuget.exe restore
-  workingDirectory: $(Build.Repository.LocalPath)
+- task: Cache@2
+  inputs:
+    key: 'nuget | "$(Agent.OS)"'
+    restoreKeys: |
+       nuget | "$(Agent.OS)"
+       nuget
+    path: $(NUGET_PACKAGES)
+  displayName: Cache NuGet packages
+
+- script: git config -f .gitmodules submodule.mono.shallow true
+- script: git submodule update --init --depth 2 --no-single-branch 
 
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    msbuildArgs: '-restore /m'
+    logFileVerbosity: minimal
 
 - script: dir
   workingDirectory: '$(Build.BinariesDirectory)' 

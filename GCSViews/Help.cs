@@ -1,9 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows.Forms;
-using MissionPlanner.Controls;
+﻿using MissionPlanner.Controls;
 using MissionPlanner.Properties;
 using MissionPlanner.Utilities;
+using System;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace MissionPlanner.GCSViews
 {
@@ -35,6 +35,10 @@ namespace MissionPlanner.GCSViews
         {
             try
             {
+                if (Program.WindowsStoreApp)
+                {
+                    return;
+                }
                 Utilities.Update.CheckForUpdate(true);
             }
             catch (Exception ex)
@@ -56,7 +60,7 @@ namespace MissionPlanner.GCSViews
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://firmware.ardupilot.org/Tools/MissionPlanner/upgrade/ChangeLog.txt");
+            Process.Start("https://firmware.ardupilot.org/Tools/MissionPlanner/upgrade/ChangeLog.txt");
         }
 
         private void BUT_betaupdate_Click(object sender, EventArgs e)

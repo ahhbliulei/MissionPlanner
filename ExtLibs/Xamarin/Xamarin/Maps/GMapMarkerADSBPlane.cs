@@ -2,7 +2,6 @@
 using System.Drawing;
 using GMap.NET;
 using GMap.NET.WindowsForms;
-using MissionPlanner.Utilities.Drawing;
 
 namespace MissionPlanner.Maps
 {

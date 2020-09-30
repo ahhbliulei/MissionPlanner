@@ -8,15 +8,16 @@ namespace MissionPlanner.Controls
 {
     public partial class DistanceBar : UserControl
     {
-        Brush brushbar = new SolidBrush(Color.FromArgb(50, Color.White));
+        private readonly Brush _brushbar = new SolidBrush(Color.FromArgb(50, Color.White));
 
 
         private readonly Bitmap icon = global::MissionPlanner.Properties.Resources.marker_05;
 
-        private float _traveleddist=0;
+        private float _traveleddist = 0;
 
         public float totaldist { get; set; }
-        public float traveleddist {
+        public float traveleddist
+        {
             get { return _traveleddist; }
             set
             {
@@ -106,23 +107,23 @@ namespace MissionPlanner.Controls
 
                     etemp.Clear(Color.Transparent);
 
-                    etemp.FillRectangle(brushbar, bar);
+                    etemp.FillRectangle(_brushbar, bar);
 
                     // draw bar traveled
 
-                    RectangleF bartrav = new RectangleF(bar.X, bar.Y, bar.Width*(traveleddist/totaldist), bar.Height);
+                    RectangleF bartrav = new RectangleF(bar.X, bar.Y, bar.Width * (traveleddist / totaldist), bar.Height);
 
-                    etemp.FillRectangle(brushbar, bartrav);
-                    etemp.FillRectangle(brushbar, bartrav);
-                    etemp.FillRectangle(brushbar, bartrav);
-                    etemp.FillRectangle(brushbar, bartrav);
-                    etemp.FillRectangle(brushbar, bartrav);
+                    etemp.FillRectangle(_brushbar, bartrav);
+                    etemp.FillRectangle(_brushbar, bartrav);
+                    etemp.FillRectangle(_brushbar, bartrav);
+                    etemp.FillRectangle(_brushbar, bartrav);
+                    etemp.FillRectangle(_brushbar, bartrav);
 
                     // draw wp dist
 
                     lock (locker)
                     {
-                        float iconwidth = this.Height/4.0f;
+                        float iconwidth = this.Height / 4.0f;
                         float trav = 0;
                         foreach (var disttrav in wpdist)
                         {
@@ -131,8 +132,8 @@ namespace MissionPlanner.Controls
                             if (trav > totaldist)
                                 trav = totaldist;
 
-                            etemp.FillPie(Brushes.Yellow, (bar.X + bar.Width*(trav/totaldist)) - iconwidth/2, bar.Top,
-                                bar.Height/2, bar.Height, 0, 360);
+                            etemp.FillPie(Brushes.Yellow, (bar.X + bar.Width * (trav / totaldist)) - iconwidth / 2, bar.Top,
+                                bar.Height / 2, bar.Height, 0, 360);
                             //e.Graphics.DrawImage(icon, (bar.X + bar.Width * (trav / totaldist)) - iconwidth / 2, 1, iconwidth, bar.Height);
                         }
                     }
@@ -142,7 +143,7 @@ namespace MissionPlanner.Controls
                     string dist = traveleddist.ToString("0");
 
                     etemp.DrawString(dist, this.Font, new SolidBrush(this.ForeColor), bartrav.Right,
-                        bartrav.Bottom - this.Font.Height);
+                        bartrav.Bottom - FontHeight);
 
                     e.Graphics.DrawImageUnscaled(buffer, 0, 0);
                 }

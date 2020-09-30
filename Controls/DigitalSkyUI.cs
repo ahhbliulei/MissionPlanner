@@ -17,7 +17,7 @@ namespace MissionPlanner.Controls
 {
     public partial class DigitalSkyUI : UserControl, IActivate
     {
-        GMapOverlay markeroverlay;
+        GMapOverlay _markeroverlay;
         private DigitalSky digitalSky;
 
         public DigitalSkyUI()
@@ -25,16 +25,15 @@ namespace MissionPlanner.Controls
             InitializeComponent();
         }
 
-        public void test()
+        public async void test()
         {
             ServicePointManager
                     .ServerCertificateValidationCallback +=
                 (sender, cert, chain, sslPolicyErrors) => true;
 
-            var login = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+            var login = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
                 .AppendPathSegment("api/auth/token")
-                .PostJsonAsync(new {email = "", password = ""}).ReceiveJson<JObject>()
-                .Result;
+                .PostJsonAsync(new { email = "", password = "" }).ReceiveJson<JObject>().ConfigureAwait(false);
 
             var login2 = login as IDictionary<String, Object>;
 
@@ -44,40 +43,40 @@ namespace MissionPlanner.Controls
             var myuserid = login["id"].Value<Int64>();
 
             //https://github.com/iSPIRT/digital-sky-api/blob/develop/src/main/java/com/ispirit/digitalsky/controller/UserController.java#L74
-            var user = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
-                .AppendPathSegment("api/user/"+myuserid)
+            var user = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+                .AppendPathSegment("api/user/" + myuserid)
                 .WithOAuthBearerToken(accessToken)
-                .GetJsonAsync<JObject>().Result;
+                .GetJsonAsync<JObject>().ConfigureAwait(false);
 
             //https://github.com/iSPIRT/digital-sky-api/blob/master/src/main/java/com/ispirit/digitalsky/controller/UserController.java#L89
-            var apps = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+            var apps = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
                 .AppendPathSegment("api/user/applications")
                 .WithOAuthBearerToken(accessToken)
-                .GetJsonAsync<JArray>().Result;
+                .GetJsonAsync<JArray>().ConfigureAwait(false);
 
             //https://github.com/iSPIRT/digital-sky-api/blob/master/src/main/java/com/ispirit/digitalsky/controller/OperatorDroneController.java#L36
-            var drones = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+            var drones = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
                 .AppendPathSegment("api/operatorDrone")
                 .WithOAuthBearerToken(accessToken)
-                .GetJsonAsync<JArray>().Result;
+                .GetJsonAsync<JArray>().ConfigureAwait(false);
 
             //https://github.com/iSPIRT/digital-sky-api/blob/develop/src/main/java/com/ispirit/digitalsky/controller/OperatorDroneController.java#L47
-            var droneid = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+            var droneid = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
                 .AppendPathSegment("api/operatorDrone/7")
                 .WithOAuthBearerToken(accessToken)
-                .GetJsonAsync<JObject> ().Result;
+                .GetJsonAsync<JObject>().ConfigureAwait(false);
 
             //https://github.com/iSPIRT/digital-sky-api/blob/a0144df5e558db27e15ecda25e1e4836408bc8d9/src/main/java/com/ispirit/digitalsky/controller/FlyDronePermissionApplicationController.java#L136
-            var flyDronePermissionApplication_list = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+            var flyDronePermissionApplication_list = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
                 .AppendPathSegment("/api/applicationForm/flyDronePermissionApplication/list")
-                .SetQueryParam("droneId","7")
+                .SetQueryParam("droneId", "7")
                 .WithOAuthBearerToken(accessToken)
-                .GetJsonAsync<JArray>().Result;
-                
-    var flyDronePermissionApplication_application = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
-        .AppendPathSegment(
-            "api/applicationForm/flyDronePermissionApplication/5d175f1c4cedfd0005d76bea/document/permissionArtifact")
-        .WithOAuthBearerToken(accessToken).GetStringAsync().Result;
+                .GetJsonAsync<JArray>().ConfigureAwait(false);
+
+            var flyDronePermissionApplication_application = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+                .AppendPathSegment(
+                    "api/applicationForm/flyDronePermissionApplication/5d175f1c4cedfd0005d76bea/document/permissionArtifact")
+                .WithOAuthBearerToken(accessToken).GetStringAsync().ConfigureAwait(false);
             /*
                 //https://github.com/iSPIRT/digital-sky-api/blob/develop/src/main/java/com/ispirit/digitalsky/controller/AirspaceCategoryController.java#L63
                         var getAllAirspaceCategory = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
@@ -87,33 +86,33 @@ namespace MissionPlanner.Controls
                     */
 
 
-            var uploadlog = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+            var uploadlog = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
                 .AppendPathSegment(
                     "/api/applicationForm/flyDronePermissionApplication/5d175f1c4cedfd0005d76bea/document/flightLog")
                 .AllowAnyHttpStatus()
                 .WithOAuthBearerToken(accessToken)
-                .PostMultipartAsync(mp => mp.AddFile("flightLogDocument", @"C:\Users\mich1\Downloads\permissionArtifact")).ReceiveJson<JObject>().Result;
-            
+                .PostMultipartAsync(mp => mp.AddFile("flightLogDocument", @"C:\Users\mich1\Downloads\permissionArtifact")).ReceiveJson<JObject>().ConfigureAwait(false);
 
 
 
-            var manufacturer = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+
+            var manufacturer = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
                 .AppendPathSegment("/api/manufacturer/0")
                 .AllowAnyHttpStatus()
                 .WithOAuthBearerToken(accessToken)
-                .GetJsonAsync<JObject>().Result;
+                .GetJsonAsync<JObject>().ConfigureAwait(false);
 
 
-            var occurance = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+            var occurance = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
                 .AppendPathSegment("/api/occurrenceReport/drone/7/list")
                 .AllowAnyHttpStatus()
                 .WithOAuthBearerToken(accessToken)
-                .GetJsonAsync<JArray>().Result;
+                .GetJsonAsync<JArray>().ConfigureAwait(false);
 
 
 
 
-            var flightcreate = "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
+            var flightcreate = await "https://digitalsky-uat.centralindia.cloudapp.azure.com:8080"
                 .AppendPathSegment("/api/applicationForm/flyDronePermissionApplication")
                 .AllowAnyHttpStatus()
                 .WithOAuthBearerToken(accessToken)
@@ -142,7 +141,7 @@ namespace MissionPlanner.Controls
                     maxAltitude = 400,
                     startDateTime = DateTime.Now.AddDays(2).ToString("dd-MM-yyyy HH:mm:ss"),
                     endDateTime = DateTime.Now.AddDays(2).AddHours(2).ToString("dd-MM-yyyy HH:mm:ss"),
-                  //  status= "SUBMITTED",
+                    //  status= "SUBMITTED",
                     /* recurringTimeExpression = "",
                      recurringTimeDurationInMinutes = 0,
                      recurringPatternType = "",
@@ -153,7 +152,7 @@ namespace MissionPlanner.Controls
                     maxEndurance = 0,
                     droneType = "",
                     uin = ""*/
-                }).ReceiveJson<JObject>().Result;
+                }).ReceiveJson<JObject>().ConfigureAwait(false);
         }
 
         public void Activate()
@@ -166,8 +165,8 @@ namespace MissionPlanner.Controls
             myGMAP1.Position = new PointLatLng(17.8758086, 77.7369485);
             myGMAP1.FillEmptyTiles = true;
 
-            markeroverlay = new GMapOverlay("markers");
-            myGMAP1.Overlays.Add(markeroverlay);
+            _markeroverlay = new GMapOverlay("markers");
+            myGMAP1.Overlays.Add(_markeroverlay);
 
             myGMAP1.Invalidate();
 
@@ -188,9 +187,9 @@ namespace MissionPlanner.Controls
                 {
                     Settings.Instance["DigitalSky_Password"] = new Crypto().EncryptString(pw);
 
-                    if (await digitalSky.Login(un, pw))
+                    if (await digitalSky.Login(un, pw).ConfigureAwait(false))
                     {
-                        var dronelist = (await digitalSky.GetDrones());
+                        var dronelist = (await digitalSky.GetDrones().ConfigureAwait(false));
 
                         var displaylist = dronelist.Select(a => new KeyValuePair<int, string>(
                             a.Value["id"].Value<int>(),
@@ -199,7 +198,7 @@ namespace MissionPlanner.Controls
                         cmb_drones.DisplayMember = "Value";
                         cmb_drones.ValueMember = "Key";
                         cmb_drones.DataSource = displaylist.ToList();
-      
+
                         CustomMessageBox.Show("Login Successful");
                     }
                     else
@@ -212,11 +211,11 @@ namespace MissionPlanner.Controls
 
         private async void Cmb_drones_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var applist = (await digitalSky
-                .ListFlyPermission((int) cmb_drones.SelectedValue));
+            var applist = await digitalSky
+                .ListFlyPermission((int)cmb_drones.SelectedValue).ConfigureAwait(false);
 
             var displaylist =
-                applist.Where(a=>a.Value["status"].Value<string>().Contains("APPROVED")).Select(a => new KeyValuePair<string, JToken>(a.Key, a.Value));
+                applist.Where(a => a.Value["status"].Value<string>().Contains("APPROVED")).Select(a => new KeyValuePair<string, JToken>(a.Key, a.Value));
 
             cmb_applications.DisplayMember = "Key";
             cmb_applications.ValueMember = "Value";
@@ -228,18 +227,18 @@ namespace MissionPlanner.Controls
             var perm = (JToken)cmb_applications.SelectedValue;
 
             var flyArea = perm["flyArea"].Children().Select(a =>
-                new PointLatLngAlt(a["latitude"].Value<double>(), a["longitude"].Value<double>(),perm["maxAltitude"].Value<double>() / 3.281,perm["id"].Value<string>()));
+                new PointLatLngAlt(a["latitude"].Value<double>(), a["longitude"].Value<double>(), perm["maxAltitude"].Value<double>() / 3.281, perm["id"].Value<string>()));
 
             lbl_approvedstatus.Text = perm["status"].Value<string>();
 
-            markeroverlay.Markers.Clear();
-            markeroverlay.Polygons.Clear();
+            _markeroverlay.Markers.Clear();
+            _markeroverlay.Polygons.Clear();
 
-            markeroverlay.Polygons.Add(new GMapPolygon(flyArea.ToList().Select(a=>(PointLatLng)a).ToList(), ""));
+            _markeroverlay.Polygons.Add(new GMapPolygon(flyArea.ToList().Select(a => (PointLatLng)a).ToList(), ""));
 
             foreach (var pointLatLngAlt in flyArea)
             {
-                markeroverlay.Markers.Add(new GMapMarkerWP(pointLatLngAlt, ""));
+                _markeroverlay.Markers.Add(new GMapMarkerWP(pointLatLngAlt, ""));
             }
 
             var rect = myGMAP1.GetRectOfAllMarkers(null);
@@ -257,7 +256,7 @@ namespace MissionPlanner.Controls
 
             var id = perm["id"].Value<string>();
 
-            var xmlfile = await digitalSky.GetPermissionArtifact(id);
+            var xmlfile = await digitalSky.GetPermissionArtifact(id).ConfigureAwait(false);
 
             var artifactdir = Settings.GetDataDirectory() + Path.DirectorySeparatorChar + "DigitalSkyArtifact";
 
@@ -268,8 +267,8 @@ namespace MissionPlanner.Controls
 
             File.WriteAllText(destlocalfile, xmlfile);
 
-            MAVFtp ftp = new MAVFtp(MainV2.comPort, (byte) MainV2.comPort.sysidcurrent,
-                (byte) MainV2.comPort.compidcurrent);
+            MAVFtp ftp = new MAVFtp(MainV2.comPort, (byte)MainV2.comPort.sysidcurrent,
+                (byte)MainV2.comPort.compidcurrent);
 
             ftp.UploadFile(id + ".xml", destlocalfile, null);
 
@@ -286,7 +285,7 @@ namespace MissionPlanner.Controls
                 var perm = (JToken)cmb_applications.SelectedValue;
                 var id = perm["id"].Value<string>();
 
-                var ans = await digitalSky.UploadFlightLog(id, ofd.FileName);
+                var ans = await digitalSky.UploadFlightLog(id, ofd.FileName).ConfigureAwait(false);
 
                 CustomMessageBox.Show(ans.ToString());
             }

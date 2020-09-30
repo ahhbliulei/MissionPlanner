@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -20,6 +21,7 @@ namespace MissionPlanner.Comms
         public IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
         private int retrys = 3;
+        private IPEndPoint hostEndPoint;
 
         public string ConfigRef { get; set; } = "";
 
@@ -62,20 +64,7 @@ namespace MissionPlanner.Comms
 
         public int BytesToWrite => 0;
 
-        public bool IsOpen
-        {
-            get
-            {
-                try
-                {
-                    return client.Client.Connected;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-        }
+        public bool IsOpen { get; set; }
 
         public bool DtrEnable { get; set; }
 
@@ -110,11 +99,42 @@ namespace MissionPlanner.Comms
             OnSettings("UDP_port" + ConfigRef, Port, true);
             OnSettings("UDP_host" + ConfigRef, host, true);
 
-            client = new UdpClient(host, int.Parse(Port));
+            IPAddress addr;
 
-            client.Connect(host, int.Parse(Port));
+            if (IPAddress.TryParse(host, out addr))
+            {
+                hostEndPoint = new IPEndPoint(addr, int.Parse(Port));
+            }
+            else
+            {
+                hostEndPoint = new IPEndPoint(Dns.GetHostEntry(host).AddressList.First(), int.Parse(Port));
+            }
+
+            if (IsInRange("224.0.0.0", "239.255.255.255", hostEndPoint.Address.ToString()))
+            {
+                client = new UdpClient(int.Parse(Port));
+                client.JoinMulticastGroup(IPAddress.Parse(host));
+            }
+            else
+            {
+                client = new UdpClient();
+                client.Connect(hostEndPoint);
+            }
+
+            IsOpen = true;
 
             VerifyConnected();
+        }
+
+        public static bool IsInRange(string startIpAddr, string endIpAddr, string address)
+        {
+            long ipStart = BitConverter.ToInt32(IPAddress.Parse(startIpAddr).GetAddressBytes().Reverse().ToArray(), 0);
+
+            long ipEnd = BitConverter.ToInt32(IPAddress.Parse(endIpAddr).GetAddressBytes().Reverse().ToArray(), 0);
+
+            long ip = BitConverter.ToInt32(IPAddress.Parse(address).GetAddressBytes().Reverse().ToArray(), 0);
+
+            return ip >= ipStart && ip <= ipEnd;
         }
 
         public int Read(byte[] readto, int offset, int length)
@@ -138,7 +158,7 @@ namespace MissionPlanner.Comms
                     }
 
                     // copy mem stream to byte array.
-                    rbuffer = r.ToArray();
+                    rbuffer = r.GetBuffer();
                     // reset head.
                     rbufferread = 0;
                 } while (rbuffer.Length < length && DateTime.Now < deadline);
@@ -207,7 +227,7 @@ namespace MissionPlanner.Comms
             VerifyConnected();
             try
             {
-                client.Client.Send(write, length, SocketFlags.None);
+                client.Client.SendTo(write, length, SocketFlags.None, hostEndPoint);
             }
             catch
             {
@@ -260,6 +280,17 @@ namespace MissionPlanner.Comms
 
         public void Close()
         {
+            IsOpen = false;
+
+            try
+            {
+                if (hostEndPoint != null)
+                    client.DropMulticastGroup(hostEndPoint.Address);
+            }
+            catch
+            {
+            }
+
             try
             {
                 if (client.Client != null && client.Client.Connected)

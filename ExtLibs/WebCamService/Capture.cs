@@ -65,6 +65,7 @@ namespace WebCamService
         private event CamImage m_camimage = null;
 
         Thread timer1;
+        private bool _camrun;
 
         #endregion
 
@@ -115,7 +116,9 @@ namespace WebCamService
         {
             DateTime last = DateTime.Now;
 
-            while (true)
+            _camrun = true;
+
+            while (_camrun)
             {
                 try
                 {
@@ -138,8 +141,7 @@ namespace WebCamService
         /// <summary> release everything. </summary>
         public void Dispose()
         {
-            if (timer1 != null)
-                timer1.Abort();
+            _camrun = false;
 
             if (m_camimage != null)
             {
@@ -185,8 +187,12 @@ namespace WebCamService
             if (m_handle == IntPtr.Zero)
                 m_handle = Marshal.AllocCoTaskMem(m_stride * m_videoHeight);
 
+            if (m_PictureReady == null)
+                return m_handle;
+
             try
             {
+               
                 // get ready to wait for new image
                 m_PictureReady.Reset();
                 m_bGotOne = false;
@@ -533,11 +539,13 @@ namespace WebCamService
                     throw new Exception("Buffer is wrong size");
                 }
 
+#if !LIB
+
                 unsafe
                 {
                     Buffer.MemoryCopy(pBuffer.ToPointer(), m_handle.ToPointer(), iBufferLen, iBufferLen);
                 }
-
+#endif
                 // Picture is ready.
                 m_PictureReady.Set();
             }
@@ -554,11 +562,13 @@ namespace WebCamService
                 // The buffer should be long enought
                 if(BufferLen <= m_stride * m_videoHeight)
                 {
+#if !LIB
                     // Copy the frame to the buffer
                     unsafe
                     {
                         Buffer.MemoryCopy( pBuffer.ToPointer(), m_handle.ToPointer(), BufferLen, BufferLen);
                     }
+#endif
                 }
                 else
                 {

@@ -192,29 +192,34 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             this.Params.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.Params.RowHeadersVisible = false;
             this.Params.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
+            this.Params.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.Params_CellBeginEdit);
             this.Params.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Params_CellClick);
             this.Params.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Params_CellContentClick);
             this.Params.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.Params_CellValueChanged);
             // 
             // Command
             // 
+            this.Command.FillWeight = 20F;
             resources.ApplyResources(this.Command, "Command");
             this.Command.Name = "Command";
             this.Command.ReadOnly = true;
             // 
             // Value
             // 
+            this.Value.FillWeight = 11F;
             resources.ApplyResources(this.Value, "Value");
             this.Value.Name = "Value";
             // 
             // Units
             // 
+            this.Units.FillWeight = 9F;
             resources.ApplyResources(this.Units, "Units");
             this.Units.Name = "Units";
             this.Units.ReadOnly = true;
             // 
             // Options
             // 
+            this.Options.FillWeight = 28F;
             resources.ApplyResources(this.Options, "Options");
             this.Options.Name = "Options";
             this.Options.ReadOnly = true;
@@ -224,13 +229,14 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             this.Desc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.Desc.DefaultCellStyle = dataGridViewCellStyle2;
+            this.Desc.FillWeight = 25F;
             resources.ApplyResources(this.Desc, "Desc");
             this.Desc.Name = "Desc";
             this.Desc.ReadOnly = true;
             // 
             // Fav
             // 
-            this.Fav.FillWeight = 1F;
+            this.Fav.FillWeight = 4F;
             resources.ApplyResources(this.Fav, "Fav");
             this.Fav.Name = "Fav";
             // 
@@ -274,12 +280,12 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         private System.Windows.Forms.TextBox txt_search;
         private System.Windows.Forms.Label label2;
         private MyButton BUT_commitToFlash;
+        private System.Windows.Forms.CheckBox chk_modified;
         private System.Windows.Forms.DataGridViewTextBoxColumn Command;
         private System.Windows.Forms.DataGridViewTextBoxColumn Value;
         private System.Windows.Forms.DataGridViewTextBoxColumn Units;
         private System.Windows.Forms.DataGridViewTextBoxColumn Options;
         private System.Windows.Forms.DataGridViewTextBoxColumn Desc;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Fav;
-        private System.Windows.Forms.CheckBox chk_modified;
     }
 }

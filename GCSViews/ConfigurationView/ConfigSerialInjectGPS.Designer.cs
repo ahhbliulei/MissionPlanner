@@ -36,7 +36,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.chk_rtcmmsg = new System.Windows.Forms.CheckBox();
             this.lbl_svin = new System.Windows.Forms.Label();
-            this.chk_m8pautoconfig = new System.Windows.Forms.CheckBox();
+            this.chk_ubloxautoconfig = new System.Windows.Forms.CheckBox();
             this.groupBoxm8p = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -74,12 +74,16 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.labelGall = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.label14BDS = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.labelglonass = new System.Windows.Forms.Label();
             this.labelgps = new System.Windows.Forms.Label();
             this.labelbase = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.myGMAP1 = new MissionPlanner.Controls.myGMAP();
+            this.chk_sendgga = new System.Windows.Forms.CheckBox();
             this.groupBoxm8p.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -145,13 +149,13 @@
             this.lbl_svin.Name = "lbl_svin";
             this.toolTip1.SetToolTip(this.lbl_svin, resources.GetString("lbl_svin.ToolTip"));
             // 
-            // chk_m8pautoconfig
+            // chk_ubloxautoconfig
             // 
-            resources.ApplyResources(this.chk_m8pautoconfig, "chk_m8pautoconfig");
-            this.chk_m8pautoconfig.Name = "chk_m8pautoconfig";
-            this.toolTip1.SetToolTip(this.chk_m8pautoconfig, resources.GetString("chk_m8pautoconfig.ToolTip"));
-            this.chk_m8pautoconfig.UseVisualStyleBackColor = true;
-            this.chk_m8pautoconfig.CheckedChanged += new System.EventHandler(this.chk_m8pautoconfig_CheckedChanged);
+            resources.ApplyResources(this.chk_ubloxautoconfig, "chk_ubloxautoconfig");
+            this.chk_ubloxautoconfig.Name = "chk_ubloxautoconfig";
+            this.toolTip1.SetToolTip(this.chk_ubloxautoconfig, resources.GetString("chk_ubloxautoconfig.ToolTip"));
+            this.chk_ubloxautoconfig.UseVisualStyleBackColor = true;
+            this.chk_ubloxautoconfig.CheckedChanged += new System.EventHandler(this.chk_m8pautoconfig_CheckedChanged);
             // 
             // groupBoxm8p
             // 
@@ -401,6 +405,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.labelGall);
+            this.groupBox2.Controls.Add(this.label16);
             this.groupBox2.Controls.Add(this.label14BDS);
             this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Controls.Add(this.labelglonass);
@@ -414,6 +420,17 @@
             resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
+            // 
+            // labelGall
+            // 
+            this.labelGall.BackColor = System.Drawing.Color.Red;
+            resources.ApplyResources(this.labelGall, "labelGall");
+            this.labelGall.Name = "labelGall";
+            // 
+            // label16
+            // 
+            resources.ApplyResources(this.label16, "label16");
+            this.label16.Name = "label16";
             // 
             // label14BDS
             // 
@@ -456,18 +473,52 @@
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.TabStop = false;
             // 
-            // SerialInjectGPS
+            // myGMAP1
             // 
-            
+            this.myGMAP1.Bearing = 0F;
+            this.myGMAP1.CanDragMap = true;
+            this.myGMAP1.EmptyTileColor = System.Drawing.Color.Navy;
+            this.myGMAP1.GrayScaleMode = false;
+            this.myGMAP1.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
+            this.myGMAP1.HoldInvalidation = false;
+            this.myGMAP1.LevelsKeepInMemmory = 5;
+            resources.ApplyResources(this.myGMAP1, "myGMAP1");
+            this.myGMAP1.MarkersEnabled = true;
+            this.myGMAP1.MaxZoom = 2;
+            this.myGMAP1.MinZoom = 2;
+            this.myGMAP1.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
+            this.myGMAP1.Name = "myGMAP1";
+            this.myGMAP1.NegativeMode = false;
+            this.myGMAP1.PolygonsEnabled = true;
+            this.myGMAP1.RetryLoadTile = 0;
+            this.myGMAP1.RoutesEnabled = true;
+            this.myGMAP1.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
+            this.myGMAP1.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
+            this.myGMAP1.ShowTileGridLines = false;
+            this.myGMAP1.Zoom = 0D;
+            // 
+            // chk_sendgga
+            // 
+            resources.ApplyResources(this.chk_sendgga, "chk_sendgga");
+            this.chk_sendgga.Checked = true;
+            this.chk_sendgga.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chk_sendgga.Name = "chk_sendgga";
+            this.toolTip1.SetToolTip(this.chk_sendgga, resources.GetString("chk_sendgga.ToolTip"));
+            this.chk_sendgga.UseVisualStyleBackColor = true;
+            // 
+            // ConfigSerialInjectGPS
+            // 
+            this.Controls.Add(this.chk_sendgga);
+            this.Controls.Add(this.myGMAP1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.chk_m8pautoconfig);
+            this.Controls.Add(this.chk_ubloxautoconfig);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.chk_rtcmmsg);
             this.Controls.Add(this.CMB_baudrate);
             this.Controls.Add(this.BUT_connect);
             this.Controls.Add(this.CMB_serialport);
-            this.Name = "SerialInjectGPS";
+            this.Name = "ConfigSerialInjectGPS";
             resources.ApplyResources(this, "$this");
             this.groupBoxm8p.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
@@ -489,14 +540,14 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox CMB_serialport;
+        public System.Windows.Forms.ComboBox CMB_serialport;
         private Controls.MyButton BUT_connect;
         private System.Windows.Forms.ComboBox CMB_baudrate;
         private System.Windows.Forms.Label lbl_status1;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.CheckBox chk_rtcmmsg;
         private System.Windows.Forms.Label lbl_svin;
-        private System.Windows.Forms.CheckBox chk_m8pautoconfig;
+        private System.Windows.Forms.CheckBox chk_ubloxautoconfig;
         private System.Windows.Forms.GroupBox groupBoxm8p;
         private System.Windows.Forms.TextBox txt_surveyinAcc;
         private System.Windows.Forms.Label label1;
@@ -539,5 +590,9 @@
         private System.Windows.Forms.DataGridViewButtonColumn Use;
         private System.Windows.Forms.DataGridViewButtonColumn Delete;
         private System.Windows.Forms.CheckBox chk_movingbase;
+        private System.Windows.Forms.Label labelGall;
+        private System.Windows.Forms.Label label16;
+        private Controls.myGMAP myGMAP1;
+        private System.Windows.Forms.CheckBox chk_sendgga;
     }
 }

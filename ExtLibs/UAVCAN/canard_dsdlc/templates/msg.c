@@ -14,6 +14,7 @@ using int64_t = System.Int64;
 using float32 = System.Single;
 
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace UAVCAN
@@ -207,6 +208,7 @@ msg.@('union.' if msg_union else '')@(field.name)_len = 0;
 @(ind)} else {
 @{indent += 1}@{ind = '    '*indent}@
 @[              end if]@
+@(ind)msg.@('union.' if msg_union else '')@(field.name) = new @(uavcan_type_to_ctype(field.type.value_type))[msg.@('union.' if msg_union else '')@(field.name)_len];
 @(ind)for (int i=0; i < msg.@('union.' if msg_union else '')@(field.name)_len; i++) {
 @[        else]@
 /*@(dir(field))*/

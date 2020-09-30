@@ -1,5 +1,4 @@
-﻿
-using MissionPlanner.Utilities.Drawing;
+﻿using System.Drawing.Imaging;
 
 namespace GMap.NET.WindowsForms
 {
